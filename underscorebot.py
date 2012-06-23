@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from twisted.words.protocols import irc
 from twisted.internet import reactor, protocol, ssl, task
 from twisted.python import log
@@ -12,6 +14,7 @@ DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Braindump", "Saturday", "
 
 class UnderscoreBot(irc.IRCClient):
     nickname = "testbot"
+    currentUsers = []
     def connectionMade(self):
         lCheck = task.LoopingCall(self.checkLoggedIn)
         lCheck.start(10.0)
@@ -27,9 +30,34 @@ class UnderscoreBot(irc.IRCClient):
 
     def checkLoggedIn(self):
         print "Checking logged in users"
+        checkResults = []
+
+        # Check scissors
         self.scissorsUser = self.scissorsChecker.checkLoggedIn()
         if (self.scissorsUser):
-            self.msg("#wrentest", "VOICE #hack %s" % self.scissorsUser)
+            checkResults.append(self.scissorsUser)
+            #self.msg("#wrentest", "VOICE #hack %s" % self.scissorsUser)
+        
+        # Put them into set form which allows us to do some pretty simple set operations
+        currentSet = set(self.currentUsers)
+        checkSet   = set(checkResults)
+        print "currentSet:", currentSet
+        print "checkSet:", checkSet
+        for user in checkSet - currentSet:
+            self.msg("#wrentest", "VOICE #hack %s" % user)
+        for user in currentSet - checkSet:
+            self.msg("#wrentest", "DEVOICE #hack %s" % user)
+
+        self.currentUsers = checkResults;
+        print self.currentUsers;
+        # for user in checkResults:
+        #     if user not in currentUsers:
+        #         currentUsers.append(user)
+        #         self.msg(channel, "VOICE #hack %s" % user)
+        # for user in currentUsers:
+
+
+        # Now time to check whether the list of users logged on has changed
 
     def __init__(self):
         print "Initializing UnderscoreBot"
