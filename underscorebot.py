@@ -94,31 +94,6 @@ class UnderscoreFactory(protocol.ClientFactory):
     
         
 
-class LinuxChecker:
-    def checkLoggedIn(self):
-        print "Checking LINUX"
-        p = subprocess.Popen(['ssh','-T', '-i', '/home/wren/ubuntu/.ssh/unsecure_wren', '-o', 'HostbasedAuthentication=no', 'scissors'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        #p = subprocess.Popen(['/u/wren/scripts/slowlist', '-l'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-        print "Received who data"
-        # p = subprocess.Popen(['ls', '-l'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        for line in p.stdout.readlines():
-            strippedLine = line.strip()
-           # print strippedLine
-           # return strippedLine
-            userData = re.match(r"^(?P<username>\S+)\s.+\((?P<from>\S+)\)$", strippedLine)
-            
-            #print userData.group("username"), userData.group("from")
-            if userData and userData.group("from") == "rita.cat.pdx.edu":
-                print userData.group("username"), userData.group("from")
-                return userData.group("username")
-        else:
-            return None
-
-class SolarisChecker:
-    def checkLoggedIn():
-        print "HI"
-
 if __name__ == '__main__':
     
     # create factory protocol and application
