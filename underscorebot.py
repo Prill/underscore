@@ -44,7 +44,7 @@ class UnderscoreBot(irc.IRCClient):
             checkResults.append(self.chandraUser)
 
         print "scissorsUser:", self.scissorsUser
-        print "scissorsUser:", self.chandraUser
+        print "chandraUser:", self.chandraUser
         print checkResults
 
         # Put them into set form which allows us to do some pretty simple set operations
