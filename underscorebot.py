@@ -37,11 +37,16 @@ class UnderscoreBot(irc.IRCClient):
         self.scissorsUser = self.scissorsChecker.checkLoggedIn()
         if (self.scissorsUser):
             checkResults.append(self.scissorsUser)
-            #self.msg("#wrentest", "VOICE #hack %s" % self.scissorsUser)
+
+        # Check chandra
         self.chandraUser = self.chandraChecker.checkLoggedIn()
         if (self.chandraUser):
             checkResults.append(self.chandraUser)
-        
+
+        print "scissorsUser:", self.scissorsUser
+        print "scissorsUser:", self.chandraUser
+        print checkResults
+
         # Put them into set form which allows us to do some pretty simple set operations
         currentSet = set(self.currentUsers)
         checkSet   = set(checkResults)
