@@ -7,8 +7,9 @@ from twisted.python import log
 # system imports
 import time, sys
 from datetime import date
-import re
-import subprocess
+
+# local imports
+from checkers import *
 
 DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Braindump", "Saturday", "Sunday")
 
@@ -16,8 +17,6 @@ class UnderscoreBot(irc.IRCClient):
     nickname = "testbot"
     currentUsers = []
     def connectionMade(self):
-        lCheck = task.LoopingCall(self.checkLoggedIn)
-        lCheck.start(10.0)
         irc.IRCClient.connectionMade(self)
     
     def connectionLost(self, reason):
@@ -25,7 +24,9 @@ class UnderscoreBot(irc.IRCClient):
 
     def signedOn(self):
         self.join("#wrentest");
-        #self.msg("#wrentest", "HA HA HA");
+        lCheck = task.LoopingCall(self.checkLoggedIn)
+        lCheck.start(10.0)
+        self.msg("#wrentest", "HA HA HA");
 
 
     def checkLoggedIn(self):
@@ -37,13 +38,21 @@ class UnderscoreBot(irc.IRCClient):
         if (self.scissorsUser):
             checkResults.append(self.scissorsUser)
             #self.msg("#wrentest", "VOICE #hack %s" % self.scissorsUser)
+        self.chandraUser = self.chandraChecker.checkLoggedIn()
+        if (self.chandraUser):
+            checkResults.append(self.chandraUser)
         
         # Put them into set form which allows us to do some pretty simple set operations
         currentSet = set(self.currentUsers)
         checkSet   = set(checkResults)
         print "currentSet:", currentSet
         print "checkSet:", checkSet
+
+        print "checkSet - currentSet: ", checkSet - currentSet
+        print "currentSet - checkSet: ", currentSet - checkSet
+
         for user in checkSet - currentSet:
+            print "VOICE #hack %s" % user
             self.msg("#wrentest", "VOICE #hack %s" % user)
         for user in currentSet - checkSet:
             self.msg("#wrentest", "DEVOICE #hack %s" % user)
@@ -61,7 +70,8 @@ class UnderscoreBot(irc.IRCClient):
 
     def __init__(self):
         print "Initializing UnderscoreBot"
-        self.scissorsChecker = LinuxChecker()
+        self.scissorsChecker = LinuxChecker('scissors')
+        self.chandraChecker  = SolarisChecker('chandra', 3)
 
 
     #def privmsg(self, user, channel, msg):
