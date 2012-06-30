@@ -24,9 +24,9 @@ class UnderscoreBot(irc.IRCClient):
 
     def signedOn(self):
         self.join("#wrentest");
+        self.msg("#wrentest", "Starting up the looping process.");
         lCheck = task.LoopingCall(self.checkLoggedIn)
         lCheck.start(10.0)
-        self.msg("#wrentest", "HA HA HA");
 
 
     def checkLoggedIn(self):
