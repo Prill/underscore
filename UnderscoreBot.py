@@ -21,8 +21,8 @@ import re
 ##import snotparser.snotparser as sp
 #from snotparser import *
 
-sys.path.insert(0, '../..')
-sys.path.insert(0, '..')
+#sys.path.insert(0, '../..')
+#sys.path.insert(0, '..')
 
 #from ..snotparser import snotparser as sp
 #from snotparser import snotparser as sp
