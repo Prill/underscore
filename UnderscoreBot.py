@@ -72,9 +72,18 @@ class UnderscoreBot(irc.IRCClient):
         if (msg == "names?"):
             self.names(channel)        
         
-        snotCommand = re.match("^snot #(?P<ticketNumber>\d+)", msg)
+        snotCommand = re.match("^snot #?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", msg)
         if snotCommand:
-            self.msg(channel,"SNOT COMMAND TIME: %s" % snotCommand.groups("ticketNumber"))
+            number = snotCommand.group("ticketNumber")
+            fString = snotCommand.group("fString")
+
+            if fString:
+                formattedString = sp.formatTicket(int(number), fString) 
+            else:
+                formattedString = sp.formatTicket(int(number), "%(number)s | %(subject)s | %(recvdate)s")
+            #self.msg(channel,"SNOT COMMAND TIME: %s" % snotCommand.groups("ticketNumber"))
+            self.msg(channel, formattedString)
+
 
         #channeljoin = re.search("join (#\S*)(\s(.*))", msg)       
         channeljoin = re.search("join (#\S*)\s*(.*)", msg)       
