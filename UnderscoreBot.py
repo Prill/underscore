@@ -44,8 +44,8 @@ sys.path.insert(0, '../..')
 sys.path.insert(0, '..')
 
 #from ..snotparser import snotparser as sp
-from snotparser import snotparser as sp
-
+#from snotparser import snotparser as sp
+import snotparser.snotparser as sp
 
 DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Braindump", "Saturday", "Sunday")
 
@@ -65,6 +65,7 @@ class UnderscoreBot(irc.IRCClient):
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
         #self.join(self.factory.channel)
+        self.join("wrentest")
         self.msg("nickserv", "identify manticore")
 
     def joined(self, channel):
@@ -90,6 +91,10 @@ class UnderscoreBot(irc.IRCClient):
         if (msg == "names?"):
             self.names(channel)        
         
+        snotCommand = re.match("^snot #(?P<ticketNumber>\d+)", msg)
+        if snotCommand:
+            self.msg(channel,"SNOT COMMAND TIME: %s" % snotCommand.groups("ticketNumber"))
+
         #channeljoin = re.search("join (#\S*)(\s(.*))", msg)       
         channeljoin = re.search("join (#\S*)\s*(.*)", msg)       
         if channeljoin:
