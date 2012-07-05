@@ -72,6 +72,13 @@ class UnderscoreBot(irc.IRCClient):
         if (msg == "names?"):
             self.names(channel)        
         
+        helpCommand = re.match("^_:?\s*help\s*$", msg)
+        if helpCommand:
+            self.msg(channel,
+            """Type `snot <ticketNumber>` to get the contents of a ticket.
+snot <ticketNumber> <formatString> to customize the output.
+Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date)s""")
+
         snotCommand = re.match("^snot #?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", msg)
         if snotCommand:
             number = snotCommand.group("ticketNumber")
