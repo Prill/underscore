@@ -14,6 +14,9 @@ import time, sys
 from datetime import date
 import re
 
+from secrets import *
+
+
 # My imports
 #import os
 #parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -47,7 +50,7 @@ class UnderscoreBot(irc.IRCClient):
         """Called when bot has succesfully signed on to server."""
         #self.join(self.factory.channel)
         self.join("wrentest")
-        self.msg("nickserv", "identify manticore")
+        self.msg("nickserv", "identify %s" % NICKSERV_PASSWORD)
 
     def joined(self, channel):
         """This will get called when the bot joins the channel."""
