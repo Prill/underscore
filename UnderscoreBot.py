@@ -48,9 +48,9 @@ class UnderscoreBot(irc.IRCClient):
 
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
-        #self.join(self.factory.channel)
-        self.join("wrentest")
         self.msg("nickserv", "identify %s" % NICKSERV_PASSWORD)
+        for channel, key in DEFAULT_CHANNELS:
+            self.join(channel, key)
 
     def joined(self, channel):
         """This will get called when the bot joins the channel."""
@@ -90,7 +90,7 @@ Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date
             if fString:
                 formattedString = sp.formatTicket(int(number), fString) 
             else:
-                formattedString = sp.formatTicket(int(number), "%(number)s | %(subject)s | %(recvdate)s")
+                formattedString = sp.formatTicket(int(number), "%(number)s | %(from_line)s | %(subject)s | (%(flags)s)")
             #self.msg(channel,"SNOT COMMAND TIME: %s" % snotCommand.groups("ticketNumber"))
             self.msg(channel, formattedString)
 
@@ -140,7 +140,7 @@ Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date
     @staticmethod
     def whatDay():
         currentDay = date.today().weekday()
-        return """Yesterday was %(yesterday)s, %(yesterday)s! Today it is %(today)s! We, we so excited, we gonna have a ball today! Tomorrow is %(tomorrow)s, and %(dayAfterTomorrow)s comes afterwaaaaard!""" % \
+        return """It's %(today)s, %(today), gotten get down on %(today)! (Yesterday was %(yesterday)s, %(yesterday)s! Today it is %(today)s! We, we so excited, we gonna have a ball today! Tomorrow is %(tomorrow)s, and %(dayAfterTomorrow)s comes afterwaaaaard!)""" % \
                   {"yesterday": DAYS[(currentDay - 1) % 7], \
                    "today": DAYS[(currentDay) % 7], \
                    "tomorrow": DAYS[(currentDay + 1) % 7], \
