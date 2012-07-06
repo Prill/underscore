@@ -14,7 +14,7 @@ import time, sys
 from datetime import date
 import re
 
-from secrets import *
+from config import *
 
 
 # My imports
