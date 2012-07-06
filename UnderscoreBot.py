@@ -18,17 +18,6 @@ from secrets import *
 
 
 # My imports
-#import os
-#parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#os.sys.path.insert(0,parentdir) 
-##import snotparser.snotparser as sp
-#from snotparser import *
-
-#sys.path.insert(0, '../..')
-#sys.path.insert(0, '..')
-
-#from ..snotparser import snotparser as sp
-#from snotparser import snotparser as sp
 import snotparser.snotparser as sp
 
 DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Braindump", "Saturday", "Sunday")
