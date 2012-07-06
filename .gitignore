@@ -2,3 +2,4 @@
 ircLogBot.py
 *.log
 *.swp
+config.py
