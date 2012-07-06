@@ -74,7 +74,7 @@ class UnderscoreBot(irc.IRCClient):
             self.msg(channel, UnderscoreBot.whatDay())
         if (msg == "names?"):
             self.names(channel)        
-        
+         
         helpCommand = re.match("^_:?\s*help\s*$", msg)
         if helpCommand:
             self.msg(channel,
@@ -140,7 +140,7 @@ Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date
     @staticmethod
     def whatDay():
         currentDay = date.today().weekday()
-        return """It's %(today)s, %(today), gotten get down on %(today)! (Yesterday was %(yesterday)s, %(yesterday)s! Today it is %(today)s! We, we so excited, we gonna have a ball today! Tomorrow is %(tomorrow)s, and %(dayAfterTomorrow)s comes afterwaaaaard!)""" % \
+        return """It's %(today)s, %(today)s, gotten get down on %(today)s! (Yesterday was %(yesterday)s, %(yesterday)s! Today it is %(today)s! We, we so excited, we gonna have a ball today! Tomorrow is %(tomorrow)s, and %(dayAfterTomorrow)s comes afterwaaaaard!)""" % \
                   {"yesterday": DAYS[(currentDay - 1) % 7], \
                    "today": DAYS[(currentDay) % 7], \
                    "tomorrow": DAYS[(currentDay + 1) % 7], \
