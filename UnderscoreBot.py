@@ -14,11 +14,9 @@ import time, sys
 from datetime import date
 import re
 
-from config import *
-
-
-# My imports
+# Local imports
 import snotparser.snotparser as sp
+from config import *
 
 DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Braindump", "Saturday", "Sunday")
 
