@@ -116,14 +116,6 @@ Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date
         "Receive WHO reply from server"
         print 'NAMES:' , nargs
 
-    # For fun, override the method that determines how a nickname is changed on
-    # collisions. The default method appends an underscore.
-    def alterCollidedNick(self, nickname):
-        """
-        Generate an altered version of a nickname that caused a collision in an
-        effort to create an unused related name for subsequent registration.
-        """
-        return nickname + '_'
     @staticmethod
     def whatDay():
         currentDay = date.today().weekday()
