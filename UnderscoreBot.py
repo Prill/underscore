@@ -41,6 +41,10 @@ class UnderscoreBot(irc.IRCClient):
 
     def joined(self, channel):
         """This will get called when the bot joins the channel."""
+    @staticmethod
+    def parseCommand(msg):
+       command = re.match("^_:?\s*(?P<command>\S*)\s*(?P<args>.*)", msg)
+       return command.groupdict()
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
@@ -59,9 +63,8 @@ class UnderscoreBot(irc.IRCClient):
         #    self.logger.log("<%s> %s" % (self.nickname, msg))
         if (re.search("what day is it\?", msg)):
             self.msg(channel, UnderscoreBot.whatDay())
-        if (msg == "names?"):
-            self.names(channel)        
-         
+        command = UnderscoreBot.parseCommand(msg)
+        print command
         helpCommand = re.match("^_:?\s*help\s*$", msg)
         if helpCommand:
             self.msg(channel,
