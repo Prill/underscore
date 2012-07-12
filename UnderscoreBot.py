@@ -65,15 +65,20 @@ class UnderscoreBot(irc.IRCClient):
             self.msg(channel, UnderscoreBot.whatDay())
         command = UnderscoreBot.parseCommand(msg)
         print command
-        helpCommand = re.match("^_:?\s*help\s*$", msg)
-        if helpCommand:
+        
+        #helpCommand = re.match("^_:?\s*help\s*$", msg)
+        #if helpCommand:
+
+        if command["command"] == "help":
             self.msg(channel,
             """Type `snot <ticketNumber>` to get the contents of a ticket.
 snot <ticketNumber> <formatString> to customize the output.
 Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date)s""")
 
-        snotCommand = re.match("^snot #?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", msg)
-        if snotCommand:
+        #if snotCommand:
+        elif command["command"] == "snot":
+            snotCommand = re.match("\s*(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
+            
             number = snotCommand.group("ticketNumber")
             fString = snotCommand.group("fString")
 
@@ -85,9 +90,8 @@ Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date
             self.msg(channel, formattedString)
 
 
-        #channeljoin = re.search("join (#\S*)(\s(.*))", msg)       
-        channeljoin = re.search("join (#\S*)\s*(.*)", msg)       
-        if channeljoin:
+        elif command["command"] == "join":
+            channeljoin = re.match("(#?\S*)\s*(.*)", command["args"])       
             # self.msg(channel, str(channeljoin.groups()))
             # for item in channeljoin.groups():
             #     self.msg(channel, item)
@@ -100,16 +104,7 @@ Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date
                 self.msg(channel, "Joining %s (no key)" % (chan,))
                 self.join(chan)
 
-    def action(self, user, channel, msg):
-        """This will get called when the bot sees someone do an action."""
-        user = user.split('!', 1)[0]
-
     # irc callbacks
-
-    def irc_NICK(self, prefix, params):
-        """Called when an IRC user changes their nickname."""
-        old_nick = prefix.split('!')[0]
-        new_nick = params[0]
 
     def names(self, channel):
         "List the users in 'channel', usage: client.who('#testroom')"
