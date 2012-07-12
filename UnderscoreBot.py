@@ -43,8 +43,11 @@ class UnderscoreBot(irc.IRCClient):
         """This will get called when the bot joins the channel."""
     @staticmethod
     def parseCommand(msg):
-       command = re.match("^_:?\s*(?P<command>\S*)\s*(?P<args>.*)", msg)
-       return command.groupdict()
+        command = re.match("^_:?\s*(?P<command>\S*)\s*(?P<args>.*)", msg)
+        if command:
+            return command.groupdict()
+        else:
+            return None
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
@@ -68,41 +71,42 @@ class UnderscoreBot(irc.IRCClient):
         
         #helpCommand = re.match("^_:?\s*help\s*$", msg)
         #if helpCommand:
+        
+        if command:
+            if command["command"] == "help":
+                self.msg(channel,
+                """Type `snot <ticketNumber>` to get the contents of a ticket.
+    snot <ticketNumber> <formatString> to customize the output.
+    Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date)s""")
 
-        if command["command"] == "help":
-            self.msg(channel,
-            """Type `snot <ticketNumber>` to get the contents of a ticket.
-snot <ticketNumber> <formatString> to customize the output.
-Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date)s""")
+            #if snotCommand:
+            elif command["command"] == "snot":
+                snotCommand = re.match("\s*(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
+                
+                number = snotCommand.group("ticketNumber")
+                fString = snotCommand.group("fString")
 
-        #if snotCommand:
-        elif command["command"] == "snot":
-            snotCommand = re.match("\s*(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
-            
-            number = snotCommand.group("ticketNumber")
-            fString = snotCommand.group("fString")
-
-            if fString:
-                formattedString = sp.formatTicket(int(number), fString) 
-            else:
-                formattedString = sp.formatTicket(int(number), "%(number)s | %(from_line)s | %(subject)s | (%(flags)s)")
-            #self.msg(channel,"SNOT COMMAND TIME: %s" % snotCommand.groups("ticketNumber"))
-            self.msg(channel, formattedString)
+                if fString:
+                    formattedString = sp.formatTicket(int(number), fString) 
+                else:
+                    formattedString = sp.formatTicket(int(number), "%(number)s | %(from_line)s | %(subject)s | (%(flags)s)")
+                #self.msg(channel,"SNOT COMMAND TIME: %s" % snotCommand.groups("ticketNumber"))
+                self.msg(channel, formattedString)
 
 
-        elif command["command"] == "join":
-            channeljoin = re.match("(#?\S*)\s*(.*)", command["args"])       
-            # self.msg(channel, str(channeljoin.groups()))
-            # for item in channeljoin.groups():
-            #     self.msg(channel, item)
-            chan = channeljoin.group(1)
-            key  = channeljoin.group(2)
-            if (key):
-                self.msg(channel, "Joining %s with key %s" % (chan, key)) 
-                self.join(chan, key)
-            else:
-                self.msg(channel, "Joining %s (no key)" % (chan,))
-                self.join(chan)
+            elif command["command"] == "join":
+                channeljoin = re.match("(#?\S*)\s*(.*)", command["args"])       
+                # self.msg(channel, str(channeljoin.groups()))
+                # for item in channeljoin.groups():
+                #     self.msg(channel, item)
+                chan = channeljoin.group(1)
+                key  = channeljoin.group(2)
+                if (key):
+                    self.msg(channel, "Joining %s with key %s" % (chan, key)) 
+                    self.join(chan, key)
+                else:
+                    self.msg(channel, "Joining %s (no key)" % (chan,))
+                    self.join(chan)
 
     # irc callbacks
 
