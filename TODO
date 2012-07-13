@@ -1,6 +1,7 @@
 
 Modify the command parser to be more scalable.
-Support PMs
+Support PMs (partially done, need to make prefix)
+
 
 IRC Bot features
 	logwatch bot
