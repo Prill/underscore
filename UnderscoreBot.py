@@ -23,6 +23,8 @@ DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Braindump", "Saturday", "
 class UnderscoreBot(irc.IRCClient):
     """A logging IRC bot."""
     
+    def __init__(self, autojoin=DEFAULT_CHANNELS):
+		self.autojoin = autojoin
     nickname = "_"
     
     def connectionMade(self):
@@ -36,7 +38,7 @@ class UnderscoreBot(irc.IRCClient):
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
         self.msg("nickserv", "identify %s" % NICKSERV_PASSWORD)
-        for channel, key in DEFAULT_CHANNELS:
+        for channel, key in self.autojoin:
             self.join(channel, key)
 
     def joined(self, channel):
@@ -52,6 +54,7 @@ class UnderscoreBot(irc.IRCClient):
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
         user = user.split('!', 1)[0]
+        
         #self.msg(channel, "%s: " % (user,))
         #self.me(channel, "hugs %s" % (user,))
         #self.notice(channel, "Alert: %s said \"%s\"" % (user,msg))
@@ -79,7 +82,6 @@ class UnderscoreBot(irc.IRCClient):
     snot <ticketNumber> <formatString> to customize the output.
     Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date)s""")
 
-            #if snotCommand:
             elif command["command"] == "snot":
                 snotCommand = re.match("\s*(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
                 
@@ -92,7 +94,6 @@ class UnderscoreBot(irc.IRCClient):
                     formattedString = sp.formatTicket(int(number), "%(number)s | %(from_line)s | %(subject)s | (%(flags)s)")
                 #self.msg(channel,"SNOT COMMAND TIME: %s" % snotCommand.groups("ticketNumber"))
                 self.msg(channel, formattedString)
-
 
             elif command["command"] == "join":
                 channeljoin = re.match("(#?\S*)\s*(.*)", command["args"])       
@@ -107,7 +108,7 @@ class UnderscoreBot(irc.IRCClient):
                 else:
                     self.msg(channel, "Joining %s (no key)" % (chan,))
                     self.join(chan)
-
+			
     # irc callbacks
 
     def names(self, channel):
@@ -151,8 +152,7 @@ class UnderscoreBotFactory(protocol.ClientFactory):
 
 
 if __name__ == '__main__':
-    # initialize logging
-    log.startLogging(sys.stdout)
+    print "Initializing"
     
     # create factory protocol and application
     f = UnderscoreBotFactory()
