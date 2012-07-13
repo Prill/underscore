@@ -55,25 +55,17 @@ class UnderscoreBot(irc.IRCClient):
         """This will get called when the bot receives a message."""
         user = user.split('!', 1)[0]
         
-        #self.msg(channel, "%s: " % (user,))
-        #self.me(channel, "hugs %s" % (user,))
-        #self.notice(channel, "Alert: %s said \"%s\"" % (user,msg))
         # Check to see if they're sending me a private message
-        #if channel == self.nickname:
-        #     msg = "It isn't nice to whisper!  Play nice with the group."
-        #     self.msg(user, msg)
-        #     return
-
+        if channel == self.nickname:
+			channel = user
+		
         # Otherwise check to see if it is a message directed at me
         #if msg.startswith(self.nickname + ":join"):
         #    self.logger.log("<%s> %s" % (self.nickname, msg))
         if (re.search("what day is it\?", msg)):
             self.msg(channel, UnderscoreBot.whatDay())
         command = UnderscoreBot.parseCommand(msg)
-        print command
-        
-        #helpCommand = re.match("^_:?\s*help\s*$", msg)
-        #if helpCommand:
+        print user + "\t%(command)s: %(args)s" % command
         
         if command:
             if command["command"] == "help":
