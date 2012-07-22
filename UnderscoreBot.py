@@ -65,15 +65,18 @@ class UnderscoreBot(irc.IRCClient):
         if (re.search("what day is it\?", msg)):
             self.msg(channel, UnderscoreBot.whatDay())
         command = UnderscoreBot.parseCommand(msg)
-        print user + "\t%(command)s: %(args)s" % command
         
+        ticketMatch = re.search("#(\d{4,})", msg)
+        if ticketMatch:
+            print ticketMatch.group(1)
+            self.msg(channel, sp.formatTicket(int(ticketMatch.group(1)), "%(number)s | %(from_line)s | %(subject)s | (%(flags)s)"))
         if command:
+            print user + "\t%(command)s: %(args)s" % command
             if command["command"] == "help":
                 self.msg(channel,
                 """Type `snot <ticketNumber>` to get the contents of a ticket.
     snot <ticketNumber> <formatString> to customize the output.
     Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date)s""")
-
             elif command["command"] == "snot":
                 snotCommand = re.match("\s*(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
                 
