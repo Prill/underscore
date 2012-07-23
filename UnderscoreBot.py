@@ -69,7 +69,7 @@ class UnderscoreBot(irc.IRCClient):
         ticketMatch = re.search("#(\d{4,})", msg)
         if ticketMatch:
             print ticketMatch.group(1)
-            self.msg(channel, sp.formatTicket(int(ticketMatch.group(1)), "%(number)s | %(from_line)s | %(subject)s | (%(flags)s)"))
+            self.msg(channel, sp.formatTicket(int(ticketMatch.group(1)), "%(number)s | %(from_line)s | %(assigned to)s | %(subject)s | (%(flags)s)"))
         if command:
             print user + "\t%(command)s: %(args)s" % command
             if command["command"] == "help":
