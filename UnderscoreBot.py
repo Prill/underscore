@@ -103,7 +103,10 @@ class UnderscoreBot(irc.IRCClient):
                 else:
                     self.msg(channel, "Joining %s (no key)" % (chan,))
                     self.join(chan)
-			
+
+            elif command["command"] == "part":
+                channelPart = re.match("(#?\S*)\s*", command["args"])       
+                self.leave(channelPart.group(1), "Parting is such sweet sorrow")
     # irc callbacks
 
     def names(self, channel):
