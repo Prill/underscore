@@ -1,5 +1,5 @@
 import re
-import snotparser
+import snotparser.snotparser as sp
 
 def parseCommand(prefix, msg):
     command = re.match("^" + prefix + ":?\s*(?P<command>\S*)\s*(?P<args>.*)", msg)
