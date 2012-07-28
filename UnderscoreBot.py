@@ -157,7 +157,7 @@ if __name__ == '__main__':
     f = UnderscoreBotFactory()
 
     # connect factory to this host and port
-    reactor.connectSSL("irc.cat.pdx.edu", 6697, f, ssl.ClientContextFactory())
+    reactor.connectSSL(DEFAULT_SERVER, 6697, f, ssl.ClientContextFactory())
 
     # run bot
     reactor.run()
