@@ -45,7 +45,6 @@ class UnderscoreBot(irc.IRCClient):
 
     def joined(self, channel):
         """This will get called when the bot joins the channel."""
-    @staticmethod
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
@@ -62,7 +61,7 @@ class UnderscoreBot(irc.IRCClient):
 
         if (re.search("what day is it\?", msg)):
             self.msg(channel, UnderscoreBot.whatDay())
-        #CommandHandler.handleCommand(self, user, channel, msg)
+        CommandHandler.handleCommand(self, user, channel, msg)
 
         
     # irc callbacks
