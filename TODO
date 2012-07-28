@@ -4,5 +4,11 @@ Support PMs (partially done, need to make prefix)
 
 Allow bot to modified without reloading the bot
 
+Load configuration from YAML
+Support command line arguments:
+    - For not autojoining
+    - custom channels
+
+
 IRC Bot features
 	logwatch bot
