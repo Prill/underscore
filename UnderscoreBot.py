@@ -27,7 +27,7 @@ class UnderscoreBot(irc.IRCClient):
     
     def __init__(self, autojoin=DEFAULT_CHANNELS):
 		self.autojoin = autojoin
-    nickname = "_"
+    nickname = PREFERRED_NICK
     
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
