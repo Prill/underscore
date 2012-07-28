@@ -13,12 +13,13 @@ from twisted.python import log
 import time, sys
 from datetime import date
 import re
+import yaml
 
 # Local imports
 import snotparser.snotparser as sp
 from config import *
 
-DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Braindump", "Saturday", "Sunday")
+DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 
 class UnderscoreBot(irc.IRCClient):
     """A logging IRC bot."""
