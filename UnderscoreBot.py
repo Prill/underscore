@@ -17,6 +17,7 @@ import yaml
 
 # Local imports
 import snotparser.snotparser as sp
+import CommandHandler
 from config import *
 
 DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
@@ -45,12 +46,6 @@ class UnderscoreBot(irc.IRCClient):
     def joined(self, channel):
         """This will get called when the bot joins the channel."""
     @staticmethod
-    def parseCommand(msg):
-        command = re.match("^_:?\s*(?P<command>\S*)\s*(?P<args>.*)", msg)
-        if command:
-            return command.groupdict()
-        else:
-            return None
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
@@ -60,54 +55,16 @@ class UnderscoreBot(irc.IRCClient):
         if channel == self.nickname:
 			channel = user
 		
-        # Otherwise check to see if it is a message directed at me
-        #if msg.startswith(self.nickname + ":join"):
-        #    self.logger.log("<%s> %s" % (self.nickname, msg))
-        if (re.search("what day is it\?", msg)):
-            self.msg(channel, UnderscoreBot.whatDay())
-        command = UnderscoreBot.parseCommand(msg)
-        
         ticketMatch = re.search("#(\d{4,})", msg)
         if ticketMatch:
             print ticketMatch.group(1)
             self.msg(channel, sp.formatTicket(int(ticketMatch.group(1)), "%(number)s | %(summary_email)s | %(assigned to)s | %(subject)s | (%(flags)s)"))
-        if command:
-            print user + "\t%(command)s: %(args)s" % command
-            if command["command"] == "help":
-                self.msg(channel,
-                """Type `snot <ticketNumber>` to get the contents of a ticket.
-    snot <ticketNumber> <formatString> to customize the output.
-    Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date)s""")
-            elif command["command"] == "snot":
-                snotCommand = re.match("\s*(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
-                
-                number = snotCommand.group("ticketNumber")
-                fString = snotCommand.group("fString")
 
-                if fString:
-                    formattedString = sp.formatTicket(int(number), fString) 
-                else:
-                    formattedString = sp.formatTicket(int(number), "%(number)s | %(from_line)s | %(subject)s | (%(flags)s)")
-                #self.msg(channel,"SNOT COMMAND TIME: %s" % snotCommand.groups("ticketNumber"))
-                self.msg(channel, formattedString)
+        if (re.search("what day is it\?", msg)):
+            self.msg(channel, UnderscoreBot.whatDay())
+        #CommandHandler.handleCommand(self, user, channel, msg)
 
-            elif command["command"] == "join":
-                channeljoin = re.match("(#?\S*)\s*(.*)", command["args"])       
-                # self.msg(channel, str(channeljoin.groups()))
-                # for item in channeljoin.groups():
-                #     self.msg(channel, item)
-                chan = channeljoin.group(1)
-                key  = channeljoin.group(2)
-                if (key):
-                    self.msg(channel, "Joining %s with key %s" % (chan, key)) 
-                    self.join(chan, key)
-                else:
-                    self.msg(channel, "Joining %s (no key)" % (chan,))
-                    self.join(chan)
-
-            elif command["command"] == "part":
-                channelPart = re.match("(#?\S*)\s*", command["args"])       
-                self.leave(channelPart.group(1), "Parting is such sweet sorrow")
+        
     # irc callbacks
 
     def names(self, channel):
