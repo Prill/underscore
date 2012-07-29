@@ -19,7 +19,7 @@ def handleCommand(client, user, channel, msg):
 snot <ticketNumber> <formatString> to customize the output.
 Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date)s""")
         elif command["command"] == "snot":
-            snotCommand = re.match("\s*(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
+            snotCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
             
             number = snotCommand.group("ticketNumber")
             fString = snotCommand.group("fString")

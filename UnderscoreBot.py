@@ -61,6 +61,7 @@ class UnderscoreBot(irc.IRCClient):
 
         if (re.search("what day is it\?", msg)):
             self.msg(channel, UnderscoreBot.whatDay())
+        
         CommandHandler.handleCommand(self, user, channel, msg)
 
         
