@@ -39,11 +39,7 @@ Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date
             chan = channeljoin.group(1)
             key  = channeljoin.group(2)
             if (key):
-<<<<<<< HEAD
                 client.msg(channel, "Joining %s with key \"%s\"" % (chan, key)) 
-=======
-                client.msg(channel, "Joining %s with key '%s'" % (chan, key)) 
->>>>>>> a51a5ef... Minor output tweaks
                 client.join(chan, key)
             else:
                 client.msg(channel, "Joining %s (no key)" % (chan,))
