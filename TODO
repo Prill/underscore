@@ -4,7 +4,7 @@ Support PMs (partially done, need to make prefix)
 
 Allow bot to modified without reloading the bot
 
-Load configuration from YAML
+Load configuration from YAML/config file
 Support command line arguments:
     - For not autojoining
     - custom channels
