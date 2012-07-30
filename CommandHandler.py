@@ -12,7 +12,7 @@ def handleCommand(client, user, channel, msg):
     command = parseCommand(client.nickname, msg)
      
     if command:
-        print user + "\t%(command)s: %(args)s" % command
+        print channel, user + "\t%(command)s: %(args)s" % command
         if command["command"] == "help":
             client.msg(channel,
             """Type `snot <ticketNumber>` to get the contents of a ticket.
@@ -48,3 +48,13 @@ Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date
         elif command["command"] == "part":
             channelPart = re.match("(#?\S*)\s*", command["args"])       
             client.leave(channelPart.group(1), "Parting is such sweet sorrow")
+
+        elif command["command"] == "reload":
+            client.reloadModule("CommandHandler")
+        
+        elif command["command"] == "dir":
+            client.msg(channel, str(client.seeNames()))
+        
+        elif command["command"] == "herp":
+            client.msg(channel, "derpina")
+			

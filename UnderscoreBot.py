@@ -64,7 +64,12 @@ class UnderscoreBot(irc.IRCClient):
         
         CommandHandler.handleCommand(self, user, channel, msg)
 
-        
+    def reloadModule(self, moduleName):
+        print "Reloading",moduleName
+        reload(sys.modules[moduleName])
+    
+    def seeNames(self):
+        return dir()
     # irc callbacks
 
     def names(self, channel):
@@ -83,7 +88,7 @@ class UnderscoreBot(irc.IRCClient):
                    "today": DAYS[(currentDay) % 7], \
                    "tomorrow": DAYS[(currentDay + 1) % 7], \
                    "dayAfterTomorrow": DAYS[(currentDay + 2) % 7]}
-
+    
 
 class UnderscoreBotFactory(protocol.ClientFactory):
     """A factory for UnderscoreBots.
