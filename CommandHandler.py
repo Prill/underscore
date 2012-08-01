@@ -17,7 +17,7 @@ def handleCommand(client, user, channel, msg):
             client.msg(channel,
             """Type `snot <ticketNumber>` to get the contents of a ticket.
 snot <ticketNumber> <formatString> to customize the output.
-Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date)s""")
+Example: $number | $summary_email | $assigned_to | $subject | $flags""")
         elif command["command"] == "snot":
             snotCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
             
@@ -27,7 +27,7 @@ Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date
             if fString:
                 formattedString = sp.formatTicket(int(number), fString) 
             else:
-                formattedString = sp.formatTicket(int(number), "%(number)s | %(summary_email)s | %(assigned to)s | %(subject)s | (%(flags)s)") 
+                formattedString = sp.formatTicket(int(number), "$number | $summary_email | $assigned_to | $subject | $flags")
             #client.msg(channel,"SNOT COMMAND TIME: %s" % snotCommand.groups("ticketNumber"))
             client.msg(channel, formattedString)
 
@@ -50,7 +50,7 @@ Example: snot 171172 %(number)s | %(subject)s | %(assigned to)s | %(closing date
             client.leave(channelPart.group(1), "Parting is such sweet sorrow")
 
         elif command["command"] == "reload":
-            client.reloadModule("CommandHandler")
+            client.reloadModule(command["args"].strip())
         
         elif command["command"] == "dir":
             client.msg(channel, str(client.seeNames()))

@@ -57,7 +57,7 @@ class UnderscoreBot(irc.IRCClient):
         ticketMatch = re.search("#(\d{4,})", msg)
         if ticketMatch:
             print user, "requested ticket", ticketMatch.group(1), "in", channel
-            self.msg(channel, sp.formatTicket(int(ticketMatch.group(1)), "%(number)s | %(summary_email)s | %(assigned to)s | %(subject)s | %(flags)s"))
+            self.msg(channel, sp.formatTicket(int(ticketMatch.group(1)), "$number | $summary_email | $assigned_to | $subject | $flags"))
 
         if (re.search("what day is it\?", msg)):
             self.msg(channel, UnderscoreBot.whatDay())
@@ -69,7 +69,7 @@ class UnderscoreBot(irc.IRCClient):
         reload(sys.modules[moduleName])
     
     def seeNames(self):
-        return dir()
+        return sys.modules
     # irc callbacks
 
     def names(self, channel):
