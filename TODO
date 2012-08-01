@@ -1,14 +1,16 @@
-
 Modify the command parser to be more scalable.
-Support PMs (partially done, need to make prefix)
+Support PMs (partially done, need to make prefix optional)
 
-Allow bot to modified without reloading the bot
+Allow bot to modified without reloading the bot 
+    - Partially done (need to extend to main bot)
 
 Load configuration from YAML/config file
+
 Support command line arguments:
     - For not autojoining
-    - custom channels
+    - custom channels, custom nick, custom server, etc.
+    - 
 
 
 IRC Bot features
-	logwatch bot
+    - logwatch bot
