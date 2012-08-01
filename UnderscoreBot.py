@@ -14,6 +14,7 @@ import time, sys
 from datetime import date
 import re
 import yaml
+import argparse
 
 # Local imports
 import snotparser.snotparser as sp
@@ -25,8 +26,9 @@ DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sun
 class UnderscoreBot(irc.IRCClient):
     """A logging IRC bot."""
     
-    def __init__(self, autojoin=DEFAULT_CHANNELS):
-		self.autojoin = autojoin
+    def __init__(self, autojoin, autojoin_list=DEFAULT_CHANNELS):
+        self.autojoin_list = autojoin_list
+        self.autojoin = autojoin
     nickname = PREFERRED_NICK
     
     def connectionMade(self):
@@ -40,8 +42,9 @@ class UnderscoreBot(irc.IRCClient):
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
         self.msg("nickserv", "identify %s" % NICKSERV_PASSWORD)
-        for channel, key in self.autojoin:
-            self.join(channel, key)
+        if self.autojoin:
+            for channel, key in self.autojoin_list:
+                self.join(channel, key)
 
     def joined(self, channel):
         """This will get called when the bot joins the channel."""
@@ -95,11 +98,12 @@ class UnderscoreBotFactory(protocol.ClientFactory):
 
     A new protocol instance will be created each time we connect to the server.
     """
-
-    #def __init__(self):
+    
+    def __init__(self, **kwargs):
+        self.arguments = kwargs
 
     def buildProtocol(self, addr):
-        p = UnderscoreBot()
+        p = UnderscoreBot(**self.arguments)
         p.factory = self
         return p
 
@@ -113,10 +117,15 @@ class UnderscoreBotFactory(protocol.ClientFactory):
 
 
 if __name__ == '__main__':
-    print "Initializing"
+    parser = argparse.ArgumentParser(description="Simple IRC bot I wrote for theCAT")
+    parser.add_argument("-n", "--no-autojoin", action="store_true")
+
+    args = parser.parse_args()
     
+    print "Initializing"
+        
     # create factory protocol and application
-    f = UnderscoreBotFactory()
+    f = UnderscoreBotFactory(autojoin=not args.no_autojoin)
 
     # connect factory to this host and port
     reactor.connectSSL(DEFAULT_SERVER, 6697, f, ssl.ClientContextFactory())
