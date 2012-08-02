@@ -46,9 +46,6 @@ class UnderscoreBot(irc.IRCClient):
             for channel, key in self.autojoin_list:
                 self.join(channel, key)
 
-    def joined(self, channel):
-        """This will get called when the bot joins the channel."""
-
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
         user = user.split('!', 1)[0]
