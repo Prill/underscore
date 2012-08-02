@@ -52,9 +52,6 @@ Example: $number | $summary_email | $assigned_to | $subject | $flags""")
         elif command["command"] == "reload":
             client.reloadModule(command["args"].strip())
         
-        elif command["command"] == "dir":
-            client.msg(channel, str(client.seeNames()))
-        
         elif command["command"] == "herp":
             client.msg(channel, "derpina")
 			
