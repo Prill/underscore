@@ -5,11 +5,12 @@ Allow bot to modified without reloading the bot
     - Partially done (need to extend to main bot)
 
 Load configuration from YAML/config file
+Logger for commands
+
 
 Support command line arguments:
     - For not autojoining
     - custom channels, custom nick, custom server, etc.
-    - 
 
 
 IRC Bot features
