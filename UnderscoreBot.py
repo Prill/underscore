@@ -18,7 +18,7 @@ import argparse
 
 # Local imports
 import snotparser.snotparser as sp
-import CommandHandler
+import CommandHandler, InlineTicketHandler
 from config import *
 
 DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
@@ -51,18 +51,14 @@ class UnderscoreBot(irc.IRCClient):
         user = user.split('!', 1)[0]
         
         # Check to see if they're sending me a private message
-        # TODO: This should be cleaned up to be less confusing
+        # TODO: This should be cleaned up to be less confusing in terms of channel vs user
         if channel == self.nickname:
 			channel = user
 		
-        ticketMatch = re.search("#(\d{4,})", msg)
-        if ticketMatch:
-            print user, "requested ticket", ticketMatch.group(1), "in", channel
-            self.msg(channel, sp.formatTicket(int(ticketMatch.group(1)), "$number | $summary_email | $assigned_to | $subject | $flags"))
-
+                
         if (re.search("what day is it\?", msg)):
             self.msg(channel, UnderscoreBot.whatDay())
-        
+        InlineTicketHandler.inlineTicketMatch(self, user, channel, msg) 
         CommandHandler.handleCommand(self, user, channel, msg)
 
     def reloadModule(self, moduleName):
@@ -71,7 +67,7 @@ class UnderscoreBot(irc.IRCClient):
             print "Reloading",moduleName
             reload(sys.modules[moduleName])
         else:
-            Print "No such module"
+            print "No such module"
     
     def seeNames(self):
         return sys.modules
