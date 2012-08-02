@@ -50,7 +50,7 @@ Example: $number | $summary_email | $assigned_to | $subject | $flags""")
             client.leave(channelPart.group(1), "Parting is such sweet sorrow")
 
         elif command["command"] == "reload":
-            client.reloadModule(command["args"].strip())
+            client.msg(channel, client.reloadModule(command["args"].strip()))
         
         elif command["command"] == "herp":
             client.msg(channel, "derpina")

@@ -62,12 +62,12 @@ class UnderscoreBot(irc.IRCClient):
         CommandHandler.handleCommand(self, user, channel, msg)
 
     def reloadModule(self, moduleName):
-        module = sys.module[moduleName]
-        if module:
-            print "Reloading",moduleName
-            reload(sys.modules[moduleName])
+        if moduleName in sys.modules:
+            moduleObject = sys.modules[moduleName]
+            reload(moduleObject)
+            return "Reloading " + str(moduleName)
         else:
-            print "No such module"
+            return "No such module"
     
     def seeNames(self):
         return sys.modules
