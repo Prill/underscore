@@ -6,7 +6,7 @@ Allow bot to modified without reloading the bot
 
 Load configuration from YAML/config file
 Logger for commands
-
+Keep track of state, such as what channels it is currently joined to.
 
 Support command line arguments:
     - For not autojoining
