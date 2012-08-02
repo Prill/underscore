@@ -51,6 +51,7 @@ class UnderscoreBot(irc.IRCClient):
         user = user.split('!', 1)[0]
         
         # Check to see if they're sending me a private message
+        # TODO: This should be cleaned up to be less confusing
         if channel == self.nickname:
 			channel = user
 		
@@ -65,8 +66,12 @@ class UnderscoreBot(irc.IRCClient):
         CommandHandler.handleCommand(self, user, channel, msg)
 
     def reloadModule(self, moduleName):
-        print "Reloading",moduleName
-        reload(sys.modules[moduleName])
+        module = sys.module[moduleName]
+        if module:
+            print "Reloading",moduleName
+            reload(sys.modules[moduleName])
+        else:
+            Print "No such module"
     
     def seeNames(self):
         return sys.modules
