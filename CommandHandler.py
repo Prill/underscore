@@ -27,7 +27,7 @@ Example: $number | $summary_email | $assigned_to | $subject | $flags""")
             if fString:
                 formattedString = sp.formatTicket(int(number), fString) 
             else:
-                formattedString = sp.formatTicket(int(number), "$number | $summary_email | $assigned_to | $subject | $flags")
+                formattedString = sp.formatTicket(int(number), "$number | $from_line | $assigned_to | $subject | $flags")
             #client.msg(channel,"SNOT COMMAND TIME: %s" % snotCommand.groups("ticketNumber"))
             client.msg(channel, formattedString)
 
