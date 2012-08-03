@@ -116,7 +116,7 @@ class UnderscoreBotFactory(protocol.ClientFactory):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Simple IRC bot I wrote for theCAT")
-    parser.add_argument("-n", "--no-autojoin", action="store_true")
+    parser.add_argument("-n", "--no-autojoin", action="store_true", help="Do not autojoin channels upon connecting")
 
     args = parser.parse_args()
     
