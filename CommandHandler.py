@@ -1,6 +1,6 @@
 import re
 import snotparser.snotparser as sp
-
+from datetime import datetime
 def parseCommand(prefix, msg):
     command = re.match("^" + prefix + ":?\s*(?P<command>\S*)\s*(?P<args>.*)", msg)
     if command:
@@ -12,7 +12,7 @@ def handleCommand(client, user, channel, msg):
     command = parseCommand(client.nickname, msg)
      
     if command:
-        print channel, user + "\t%(command)s: %(args)s" % command
+        print datetime.today().strftime("%Y-%m-%d %H:%M:%S\t"), channel, user + "\t%(command)s: %(args)s" % command
         if command["command"] == "help":
             client.msg(channel,
             """Type `snot <ticketNumber>` to get the contents of a ticket.
