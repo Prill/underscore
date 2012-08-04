@@ -1,5 +1,6 @@
 import re
 import snotparser.snotparser as sp
+import Help
 from datetime import datetime
 def parseCommand(prefix, msg):
     command = re.match("^" + prefix + ":?\s*(?P<command>\S*)\s*(?P<args>.*)", msg)
@@ -14,10 +15,13 @@ def handleCommand(client, user, channel, msg):
     if command:
         print datetime.today().strftime("%Y-%m-%d %H:%M:%S\t"), channel, user + "\t%(command)s: %(args)s" % command
         if command["command"] == "help":
-            client.msg(channel,
-            """Type `snot <ticketNumber>` to get the contents of a ticket.
-snot <ticketNumber> <formatString> to customize the output.
-Example: $number | $summary_email | $assigned_to | $subject | $flags""")
+            client.msg(channel, Help.getHelp(command["args"].strip()))
+
+#            client.msg(channel,
+#"""Type `snot <ticketNumber>` to get the contents of a ticket.
+#snot <ticketNumber> <formatString> to customize the output.
+#Example: $number | $summary_email | $assigned_to | $subject | $flags""")
+
         elif command["command"] == "snot":
             snotCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
             
@@ -54,4 +58,3 @@ Example: $number | $summary_email | $assigned_to | $subject | $flags""")
         
         elif command["command"] == "herp":
             client.msg(channel, "derpina")
-			
