@@ -26,11 +26,10 @@ DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sun
 class UnderscoreBot(irc.IRCClient):
     """A logging IRC bot."""
     
-    def __init__(self, autojoin, autojoin_list=DEFAULT_CHANNELS):
+    def __init__(self, autojoin, autojoin_list=DEFAULT_CHANNELS, nick=PREFERRED_NICK):
         self.autojoin_list = autojoin_list
         self.autojoin = autojoin
-    nickname = PREFERRED_NICK
-    
+        self.nickname = nick
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
 
@@ -45,6 +44,7 @@ class UnderscoreBot(irc.IRCClient):
         if self.autojoin:
             for channel, key in self.autojoin_list:
                 self.join(channel, key)
+        print "Nick is", self.nickname
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
@@ -116,14 +116,14 @@ class UnderscoreBotFactory(protocol.ClientFactory):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Simple IRC bot I wrote for theCAT")
-    parser.add_argument("-n", "--no-autojoin", action="store_true", help="Do not autojoin channels upon connecting")
-
+    parser.add_argument("-a", "--no-autojoin", action="store_true", help="Do not autojoin channels upon connecting")
+    parser.add_argument("-n", "--nick", action="store", help="Default nick upon joining", default=PREFERRED_NICK)
     args = parser.parse_args()
     
     print "Initializing"
         
     # create factory protocol and application
-    f = UnderscoreBotFactory(autojoin=not args.no_autojoin)
+    f = UnderscoreBotFactory(autojoin=not args.no_autojoin, nick=args.nick)
 
     # connect factory to this host and port
     reactor.connectSSL(DEFAULT_SERVER, 6697, f, ssl.ClientContextFactory())
