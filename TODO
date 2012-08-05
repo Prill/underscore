@@ -11,7 +11,7 @@ Keep track of state, such as what channels it is currently joined to.
 Support command line arguments:
     - For not autojoining
     - custom channels, custom nick, custom server, etc.
-
+    - Sort how best to handle the arguments once they are collected.
 
 IRC Bot features
     - logwatch bot
