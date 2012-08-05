@@ -26,8 +26,8 @@ def handleCommand(client, user, channel, msg):
             snotCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
             
             number = snotCommand.group("ticketNumber")
-            fString = snotCommand.group("fString")
-
+            #fString = snotCommand.group("fString")
+            fString = None
             if fString:
                 formattedString = sp.formatTicket(int(number), fString) 
             else:
