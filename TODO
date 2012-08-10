@@ -8,6 +8,9 @@ Load configuration from YAML/config file
 Logger for commands
 Keep track of state, such as what channels it is currently joined to.
 
+Incorporate logwatchbot
+Incorporate voice bot
+
 Support command line arguments:
     - For not autojoining
     - custom channels, custom nick, custom server, etc.
