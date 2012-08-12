@@ -3,7 +3,10 @@ import snotparser.snotparser as sp
 from datetime import datetime
 
 def inlineTicketMatch(client, user, channel, msg):
+    ticketNumbers = map(int, re.findall("#(\d{4,})", msg))
+    # print ticketNumbers
     ticketMatch = re.search("#(\d{4,})", msg)
-    if ticketMatch:
-        print datetime.today().strftime("%Y-%m-%d %H:%M:%S\t"), user, "requested ticket", ticketMatch.group(1), "in", channel
-        client.msg(channel, sp.formatTicket(int(ticketMatch.group(1)), "$number | $from_line | $assigned_to | $subject | $flags"))
+    if ticketNumbers:
+        for ticket in ticketNumbers:
+            print datetime.today().strftime("%Y-%m-%d %H:%M:%S\t"), user, "requested ticket", ticket, "in", channel
+            client.msg(channel, sp.formatTicket(ticket, "$number | $from_line | $assigned_to | $subject | $flags"))
