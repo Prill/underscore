@@ -3,3 +3,5 @@ ircLogBot.py
 *.log
 *.swp
 config.py
+shadow/*
+redmine.py
