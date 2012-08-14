@@ -1,6 +1,8 @@
 import re
+import urllib2
 import snotparser.snotparser as sp
 import Help
+from string import Template
 from datetime import datetime
 def parseCommand(prefix, msg):
     command = re.match("^" + prefix + ":?\s*(?P<command>\S*)\s*(?P<args>.*)", msg)
@@ -56,5 +58,15 @@ def handleCommand(client, user, channel, msg):
         elif command["command"] == "reload":
             client.msg(channel, client.reloadModule(command["args"].strip()))
         
+        elif command["command"] == "chronicle":
+            ticketCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
+            number = int(ticketCommand.group("ticketNumber"))
+            try:
+                d = client.redmine_instance.getTicket(number)
+                client.msg(channel, str(Template("#$id ($project) | $author | $assigned_to | $subject | $tracker").safe_substitute(d)))
+            except urllib2.HTTPError as e:
+                print type(e)
+                client.msg(channel, str(e))
+
         elif command["command"] == "herp":
             client.msg(channel, "derpina")

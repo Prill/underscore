@@ -20,6 +20,9 @@ import argparse
 import snotparser.snotparser as sp
 import CommandHandler, InlineTicketHandler
 from config import *
+from shadow import chronicle
+from redmine import *
+from RedmineTicketFetcher import RedmineTicketFetcher
 
 DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 
@@ -30,6 +33,7 @@ class UnderscoreBot(irc.IRCClient):
         self.autojoin_list = autojoin_list
         self.autojoin = autojoin
         self.nickname = nick
+        self.redmine_instance = RedmineTicketFetcher(chronicle.URL, chronicle.API_KEY)
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
 
