@@ -35,6 +35,9 @@ class UnderscoreBot(irc.IRCClient):
         self.nickname = nick
         self.redmine_instance = RedmineTicketFetcher(chronicle.URL, chronicle.API_KEY)
         self.handlers = []
+        self.handlerMethods = {}
+        self.addHandler(InlineTicketHandler.inlineTicketMatch, "privmsg")
+
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
 
@@ -63,8 +66,10 @@ class UnderscoreBot(irc.IRCClient):
                 
         if (re.search("what day is it\?", msg)):
             self.msg(channel, UnderscoreBot.whatDay())
-        InlineTicketHandler.inlineTicketMatch(self, user, channel, msg) 
         CommandHandler.handleCommand(self, user, channel, msg)
+        if "privmsg" in self.handlerMethods:
+            for handler in self.handlerMethods["privmsg"]:
+                handler(self, user, channel, msg)
 
     def reloadModule(self, moduleName):
         if moduleName in sys.modules:
@@ -74,6 +79,17 @@ class UnderscoreBot(irc.IRCClient):
         else:
             return "No such module"
     
+    def addHandler(self, handler, *triggers):
+        if callable(handler):
+            for trigger in triggers:
+                if trigger not in self.handlerMethods:
+                    self.handlerMethods[trigger] = [handler]
+                else:
+                    self.handlerMethods[trigger].append(handler)
+        else:
+            self.handlers.append(handler)
+
+
     def seeNames(self):
         return sys.modules
     # irc callbacks
