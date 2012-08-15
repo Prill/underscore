@@ -34,6 +34,7 @@ class UnderscoreBot(irc.IRCClient):
         self.autojoin = autojoin
         self.nickname = nick
         self.redmine_instance = RedmineTicketFetcher(chronicle.URL, chronicle.API_KEY)
+        self.handlers = []
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
 
