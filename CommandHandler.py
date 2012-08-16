@@ -67,6 +67,3 @@ def handleCommand(client, user, channel, msg):
             except urllib2.HTTPError as e:
                 print type(e)
                 client.msg(channel, str(e))
-
-        elif command["command"] == "herp":
-            client.msg(channel, "derpina")

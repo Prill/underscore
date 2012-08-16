@@ -23,8 +23,7 @@ from config import *
 from shadow import chronicle
 from redmine import *
 from RedmineTicketFetcher import RedmineTicketFetcher
-
-DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+from EasterEggHandler import EasterEggHandler
 
 class UnderscoreBot(irc.IRCClient):
     """A logging IRC bot."""
@@ -35,6 +34,10 @@ class UnderscoreBot(irc.IRCClient):
         self.nickname = nick
         self.redmine_instance = RedmineTicketFetcher(chronicle.URL, chronicle.API_KEY)
         self.handlers = []
+        self.handlerMethods = {}
+        self.addHandler(EasterEggHandler())
+        self.addHandler(InlineTicketHandler.inlineTicketMatch, "privmsg")
+
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
 
@@ -59,12 +62,18 @@ class UnderscoreBot(irc.IRCClient):
         # TODO: This should be cleaned up to be less confusing in terms of channel vs user
         if channel == self.nickname:
 			channel = user
-		
-                
-        if (re.search("what day is it\?", msg)):
-            self.msg(channel, UnderscoreBot.whatDay())
-        InlineTicketHandler.inlineTicketMatch(self, user, channel, msg) 
+        
         CommandHandler.handleCommand(self, user, channel, msg)
+        
+        #print "Handlers:", self.handlers
+        for handler in self.handlers:
+            #print handler, dir(handler)
+            if "privmsg" in dir(handler):
+                handler.privmsg(self, user, channel, msg)
+
+        if "privmsg" in self.handlerMethods:
+            for handler in self.handlerMethods["privmsg"]:
+                handler(self, user, channel, msg)
 
     def reloadModule(self, moduleName):
         if moduleName in sys.modules:
@@ -74,6 +83,18 @@ class UnderscoreBot(irc.IRCClient):
         else:
             return "No such module"
     
+    def addHandler(self, handler, *triggers):
+        if callable(handler):
+            print "Adding callable handler", handler
+            for trigger in triggers:
+                if trigger not in self.handlerMethods:
+                    self.handlerMethods[trigger] = [handler]
+                else:
+                    self.handlerMethods[trigger].append(handler)
+        else:
+            print "Adding class handler", handler
+            self.handlers.append(handler)
+
     def seeNames(self):
         return sys.modules
     # irc callbacks
@@ -85,16 +106,6 @@ class UnderscoreBot(irc.IRCClient):
     def irc_RPL_WHOREPLY(self, *nargs):
         "Receive WHO reply from server"
         print 'NAMES:' , nargs
-
-    @staticmethod
-    def whatDay():
-        currentDay = date.today().weekday()
-        return """It's %(today)s, %(today)s, gotta get down on %(today)s! (Yesterday was %(yesterday)s, %(yesterday)s! Today it is %(today)s! We, we so excited, we gonna have a ball today! Tomorrow is %(tomorrow)s, and %(dayAfterTomorrow)s comes afterwaaaaard!)""" % \
-                  {"yesterday": DAYS[(currentDay - 1) % 7], \
-                   "today": DAYS[(currentDay) % 7], \
-                   "tomorrow": DAYS[(currentDay + 1) % 7], \
-                   "dayAfterTomorrow": DAYS[(currentDay + 2) % 7]}
-    
 
 class UnderscoreBotFactory(protocol.ClientFactory):
     """A factory for UnderscoreBots.
