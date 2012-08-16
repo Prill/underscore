@@ -13,6 +13,9 @@ class InlineTicketHandler:
 def inlineTicketMatch(client, user, channel, msg):
     #ticketNumbers = map(int, re.findall("#(\d{4,})", msg))
     
+
+    ticketNumbers = re.findall("(\w+)?#(\d+)", msg)
+    #print ticketNumbers
     if ticketNumbers:
         print datetime.today().strftime("%Y-%m-%d %H:%M:%S\t"), user, "requested ticket(s)", str(ticketNumbers), "in", channel
         for ticket in ticketNumbers:

@@ -23,6 +23,7 @@ from config import *
 from shadow import chronicle
 from redmine import *
 from RedmineTicketFetcher import RedmineTicketFetcher
+from EasterEggHandler import EasterEggHandler
 
 DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 
@@ -36,6 +37,7 @@ class UnderscoreBot(irc.IRCClient):
         self.redmine_instance = RedmineTicketFetcher(chronicle.URL, chronicle.API_KEY)
         self.handlers = []
         self.handlerMethods = {}
+        self.addHandler(EasterEggHandler())
         self.addHandler(InlineTicketHandler.inlineTicketMatch, "privmsg")
 
     def connectionMade(self):
@@ -67,6 +69,13 @@ class UnderscoreBot(irc.IRCClient):
         if (re.search("what day is it\?", msg)):
             self.msg(channel, UnderscoreBot.whatDay())
         CommandHandler.handleCommand(self, user, channel, msg)
+        
+        #print "Handlers:", self.handlers
+        for handler in self.handlers:
+            #print handler, dir(handler)
+            if "privmsg" in dir(handler):
+                handler.privmsg(self, user, channel, msg)
+
         if "privmsg" in self.handlerMethods:
             for handler in self.handlerMethods["privmsg"]:
                 handler(self, user, channel, msg)
@@ -81,12 +90,14 @@ class UnderscoreBot(irc.IRCClient):
     
     def addHandler(self, handler, *triggers):
         if callable(handler):
+            print "Adding callable handler", handler
             for trigger in triggers:
                 if trigger not in self.handlerMethods:
                     self.handlerMethods[trigger] = [handler]
                 else:
                     self.handlerMethods[trigger].append(handler)
         else:
+            print "Adding class handler", handler
             self.handlers.append(handler)
 
 
