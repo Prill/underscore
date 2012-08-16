@@ -4,4 +4,5 @@ ircLogBot.py
 *.swp
 config.py
 shadow/*
+logs/*
 redmine.py

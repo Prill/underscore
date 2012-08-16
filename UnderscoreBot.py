@@ -2,7 +2,7 @@
 """
     Miscellaneous bot
 """
-
+print __file__
 
 # twisted imports
 from twisted.words.protocols import irc
@@ -137,7 +137,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     print "Initializing"
-        
+    print __file__
     # create factory protocol and application
     f = UnderscoreBotFactory(autojoin=not args.no_autojoin, nick=args.nick)
 
