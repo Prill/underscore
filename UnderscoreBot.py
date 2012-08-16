@@ -25,8 +25,6 @@ from redmine import *
 from RedmineTicketFetcher import RedmineTicketFetcher
 from EasterEggHandler import EasterEggHandler
 
-DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-
 class UnderscoreBot(irc.IRCClient):
     """A logging IRC bot."""
     
@@ -64,10 +62,7 @@ class UnderscoreBot(irc.IRCClient):
         # TODO: This should be cleaned up to be less confusing in terms of channel vs user
         if channel == self.nickname:
 			channel = user
-		
-                
-        if (re.search("what day is it\?", msg)):
-            self.msg(channel, UnderscoreBot.whatDay())
+        
         CommandHandler.handleCommand(self, user, channel, msg)
         
         #print "Handlers:", self.handlers
@@ -100,7 +95,6 @@ class UnderscoreBot(irc.IRCClient):
             print "Adding class handler", handler
             self.handlers.append(handler)
 
-
     def seeNames(self):
         return sys.modules
     # irc callbacks
@@ -112,16 +106,6 @@ class UnderscoreBot(irc.IRCClient):
     def irc_RPL_WHOREPLY(self, *nargs):
         "Receive WHO reply from server"
         print 'NAMES:' , nargs
-
-    @staticmethod
-    def whatDay():
-        currentDay = date.today().weekday()
-        return """It's %(today)s, %(today)s, gotta get down on %(today)s! (Yesterday was %(yesterday)s, %(yesterday)s! Today it is %(today)s! We, we so excited, we gonna have a ball today! Tomorrow is %(tomorrow)s, and %(dayAfterTomorrow)s comes afterwaaaaard!)""" % \
-                  {"yesterday": DAYS[(currentDay - 1) % 7], \
-                   "today": DAYS[(currentDay) % 7], \
-                   "tomorrow": DAYS[(currentDay + 1) % 7], \
-                   "dayAfterTomorrow": DAYS[(currentDay + 2) % 7]}
-    
 
 class UnderscoreBotFactory(protocol.ClientFactory):
     """A factory for UnderscoreBots.
