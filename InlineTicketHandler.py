@@ -2,6 +2,7 @@ import re
 import snotparser.snotparser as sp
 from datetime import datetime
 from string import Template
+
 def inlineTicketMatch(client, user, channel, msg):
     #ticketNumbers = map(int, re.findall("#(\d{4,})", msg))
     
