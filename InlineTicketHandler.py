@@ -2,12 +2,17 @@ import re
 import snotparser.snotparser as sp
 from datetime import datetime
 from string import Template
+import CommandHandler as ch
+from RedmineTicketFetcher import RedmineTicketFetcher
+from shadow import chronicle
+
+class InlineTicketHandler:
+    def __init__(self, url, key):
+        self.rtf = RedmineTicketFetcher(chronicle.URL, chronicle.API_KEY)
 
 def inlineTicketMatch(client, user, channel, msg):
     #ticketNumbers = map(int, re.findall("#(\d{4,})", msg))
     
-    ticketNumbers = re.findall("(\w+)?#(\d+)", msg)
-    #print ticketNumbers
     if ticketNumbers:
         print datetime.today().strftime("%Y-%m-%d %H:%M:%S\t"), user, "requested ticket(s)", str(ticketNumbers), "in", channel
         for ticket in ticketNumbers:
