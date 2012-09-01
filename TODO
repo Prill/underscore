@@ -14,6 +14,8 @@ Handle Unicode properly
 Incorporate logwatchbot
 Incorporate voice bot
 
+Asynchronous I/O and multithreading.
+
 Support command line arguments:
     - For not autojoining
     - custom channels, custom nick, custom server, etc.
