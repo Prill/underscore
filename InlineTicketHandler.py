@@ -10,6 +10,13 @@ class InlineTicketHandler:
     def __init__(self, url, key):
         self.rtf = RedmineTicketFetcher(chronicle.URL, chronicle.API_KEY)
 
+def formatTicketList(ticketNumbers):
+    s = "%s#%s" % (ticketNumbers[0][0], ticketNumbers[0][1])
+    if len(ticketNumbers) > 1:
+        for ticket in ticketNumbers:
+            s += ", %s#%s" % (ticket[0], ticket[1])
+    return s
+
 def inlineTicketMatch(client, user, channel, msg):
     #ticketNumbers = map(int, re.findall("#(\d{4,})", msg))
     
@@ -17,7 +24,7 @@ def inlineTicketMatch(client, user, channel, msg):
     ticketNumbers = re.findall("(\w+)?#(\d+)", msg)
     #print ticketNumbers
     if ticketNumbers:
-        print datetime.today().strftime("%Y-%m-%d %H:%M:%S\t"), user, "requested ticket(s)", str(ticketNumbers), "in", channel
+        print datetime.today().strftime("%Y-%m-%d %H:%M:%S\t"), user, "requested ticket(s)", formatTicketList(ticketNumbers), "in", channel
         for ticket in ticketNumbers:
             if ticket[0] in ['','snot']:
                 if int(ticket[1]) >= 1000:
