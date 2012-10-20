@@ -24,6 +24,7 @@ def inlineTicketMatch(client, user, channel, msg):
     if ticketNumbers:
         print datetime.today().strftime("%Y-%m-%d %H:%M:%S\t"), user, "requested ticket(s)", formatTicketList(ticketNumbers), "in", channel
         for ticket in ticketNumbers:
+            ticket[0] = ticket[0].lower
             if ticket[0] in ['','snot']:
                 if int(ticket[1]) >= 1000:
                     client.msg(channel, sp.formatTicket(int(ticket[1]), "#$number (SNOT) | $from_line | $assigned_to | $subject | $flags"))
