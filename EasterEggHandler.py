@@ -16,6 +16,8 @@ def whatDay():
 
 class EasterEggHandler:
     def privmsg(self, client, user, channel, msg):
+        print "Hello %s" % channel
+        client.msg(channel, "Hello %s" % channel)
         comm = ch.parseCommand(client.nickname, msg)
         if comm:
             print comm

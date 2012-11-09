@@ -34,6 +34,7 @@ class UnderscoreBot(irc.IRCClient):
         self.nickname = nick
         self.redmine_instance = RedmineTicketFetcher(chronicle.URL, chronicle.API_KEY)
         self.handlers = {}
+        self.addHandler(EasterEggHandler())
 
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
@@ -52,13 +53,16 @@ class UnderscoreBot(irc.IRCClient):
         print "Nick is", self.nickname
  
     def privmsg(self, user, channel, msg):
-        
+         
         # Check to see if they're sending me a private message
         # TODO: This should be cleaned up to be less confusing in terms of channel vs user
         if channel == self.nickname:
 			channel = user
-        for handler in self.handlers:
+
+        print "Handling PRIVMSG"
+        for alias,handler in self.handlers.iteritems():
             if "privmsg" in dir(handler):
+                print "\tRunning %s.privmsg" % handler
                 handler.privmsg(self, user, channel, msg)
         # CommandHandler.handleCommand(self, user, channel, msg)
         
