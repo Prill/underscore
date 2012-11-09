@@ -33,10 +33,7 @@ class UnderscoreBot(irc.IRCClient):
         self.autojoin = autojoin
         self.nickname = nick
         self.redmine_instance = RedmineTicketFetcher(chronicle.URL, chronicle.API_KEY)
-        self.handlers = []
-        self.handlerMethods = {}
-        self.addHandler(EasterEggHandler())
-        self.addHandler(InlineTicketHandler.inlineTicketMatch, "privmsg")
+        self.handlers = {}
 
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
@@ -53,27 +50,18 @@ class UnderscoreBot(irc.IRCClient):
             for channel, key in self.autojoin_list:
                 self.join(channel, key)
         print "Nick is", self.nickname
-
+ 
     def privmsg(self, user, channel, msg):
-        """This will get called when the bot receives a message."""
-        user = user.split('!', 1)[0]
         
         # Check to see if they're sending me a private message
         # TODO: This should be cleaned up to be less confusing in terms of channel vs user
         if channel == self.nickname:
 			channel = user
-        
-        CommandHandler.handleCommand(self, user, channel, msg)
-        
-        #print "Handlers:", self.handlers
         for handler in self.handlers:
-            #print handler, dir(handler)
             if "privmsg" in dir(handler):
                 handler.privmsg(self, user, channel, msg)
-
-        if "privmsg" in self.handlerMethods:
-            for handler in self.handlerMethods["privmsg"]:
-                handler(self, user, channel, msg)
+        # CommandHandler.handleCommand(self, user, channel, msg)
+        
 
     def reloadModule(self, moduleName):
         if moduleName in sys.modules:
@@ -83,17 +71,13 @@ class UnderscoreBot(irc.IRCClient):
         else:
             return "No such module"
     
-    def addHandler(self, handler, *triggers):
-        if callable(handler):
-            print "Adding callable handler", handler
-            for trigger in triggers:
-                if trigger not in self.handlerMethods:
-                    self.handlerMethods[trigger] = [handler]
-                else:
-                    self.handlerMethods[trigger].append(handler)
-        else:
-            print "Adding class handler", handler
-            self.handlers.append(handler)
+    def addHandler(self, handler, alias=None):
+        if alias == None:
+            alias = type(handler)
+        self.handlers[alias] = handler
+    
+    def deleteHandler(self, alias):
+        del d[alias]
 
     def seeNames(self):
         return sys.modules
