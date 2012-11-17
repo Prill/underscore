@@ -3,6 +3,7 @@ ircLogBot.py
 *.log
 *.swp
 config.py
+config.yaml
 shadow/*
 logs/*
 redmine.py
