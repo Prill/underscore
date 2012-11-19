@@ -25,14 +25,19 @@ from redmine import *
 from RedmineTicketFetcher import RedmineTicketFetcher
 from EasterEggHandler import EasterEggHandler
 
+CONFIG_FILE = "config.yaml"
+config = None
+with open(CONFIG_FILE) as cfgFile:
+    config = yaml.load(cfgFile)
+
 class UnderscoreBot(irc.IRCClient):
     """A logging IRC bot."""
     
-    def __init__(self, autojoin, autojoin_list=DEFAULT_CHANNELS, nick=PREFERRED_NICK):
+    def __init__(self, autojoin, autojoin_list=config["irc"]["channels"], nick=config["irc"]["nick"]):
         self.autojoin_list = autojoin_list
         self.autojoin = autojoin
         self.nickname = nick
-        self.redmine_instance = RedmineTicketFetcher(chronicle.URL, chronicle.API_KEY)
+        self.redmine_instance = RedmineTicketFetcher(config["redmine"]["url"], config["redmine"]["api_key"])
         self.handlers = []
         self.handlerMethods = {}
         self.addHandler(EasterEggHandler())
@@ -133,7 +138,7 @@ class UnderscoreBotFactory(protocol.ClientFactory):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Simple IRC bot I wrote for theCAT")
     parser.add_argument("-a", "--no-autojoin", action="store_true", help="Do not autojoin channels upon connecting")
-    parser.add_argument("-n", "--nick", action="store", help="Default nick upon joining", default=PREFERRED_NICK)
+    parser.add_argument("-n", "--nick", action="store", help="Default nick upon joining", default=config["irc"]["nick"])
     args = parser.parse_args()
     
     print "Initializing"
