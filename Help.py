@@ -11,8 +11,10 @@ def getHelp(topic=None):
     if not topic:
         topicString = "Topics: " + string.join(helpMessages, ", ")
         return topicString
-    else:
+    elif topic in helpMessages:
         return helpMessages[topic]
+    else:
+        return "No matching help topics found"
 
 def getHelp2(topic):
     if not topic:
