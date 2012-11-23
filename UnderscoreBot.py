@@ -53,7 +53,7 @@ class UnderscoreBot(irc.IRCClient):
 
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
-        self.msg("nickserv", "identify %s" % NICKSERV_PASSWORD)
+        self.msg("nickserv", "identify %s" % config["irc"]["nickserv_password"])
         if self.autojoin:
             for channel, key in self.autojoin_list:
                 self.join(channel, key)
@@ -147,7 +147,7 @@ if __name__ == '__main__':
     f = UnderscoreBotFactory(autojoin=not args.no_autojoin, nick=args.nick)
 
     # connect factory to this host and port
-    reactor.connectSSL(DEFAULT_SERVER, 6697, f, ssl.ClientContextFactory())
+    reactor.connectSSL(config["irc"]["server"], 6697, f, ssl.ClientContextFactory())
 
     # run bot
     reactor.run()
