@@ -1,6 +1,8 @@
 ---
 about: "This is a general-purpose written by Max Schwarz for theCAT <cat.pdx.edu>"
-source: "The source for this bot may be found at github.com/Prill/underscore"
+source: |
+    The source for this bot may be found at http\://github.com/Prill/underscore
+    The snotparsing utility is found in a separate repository at http\://github.com/Prill/snotparsing
 ticketparsing: | 
     This bot watches for mentions of ticket numbers (e.g. #123123) and spits out helpful information.
     It supports both SNOT tickets and Redmine tickets (append a 'c' to the front of the ticket # sign)
