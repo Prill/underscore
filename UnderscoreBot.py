@@ -87,7 +87,16 @@ class UnderscoreBot(irc.IRCClient):
             return "Reloading " + str(moduleName)
         else:
             return "No such module"
-    
+
+    def reloadHandler(self, handlerName):
+        if handlerName in handlers:
+            handler = handlers[handlerName]
+            handlerModuleName = handler.__module__
+            self.reloadModule(handlerModuleName)
+            handlers[handlerName] = getattr(sys.module[handlerModuleName], handlerName)()
+        else:
+            return "No such handler"
+
     def addHandler(self, handler, *triggers):
         if callable(handler):
             print "Adding callable handler", handler
