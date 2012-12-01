@@ -68,12 +68,9 @@ class UnderscoreBot(irc.IRCClient):
         if channel == self.nickname:
 			channel = user
         
-        print "Parameters:",user,channel,msg
         CommandHandler.handleCommand(self, user, channel, msg)
-        print "Command Handled"
         #print "Handlers:", self.handlers
         for handler in self.handlers:
-            print handler, dir(self.handlers[handler])
             #print handler, dir(handler)
             if "privmsg" in dir(self.handlers[handler]):
                 self.handlers[handler].privmsg(self, user, channel, msg)

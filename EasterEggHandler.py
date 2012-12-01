@@ -18,7 +18,6 @@ class EasterEggHandler:
     def privmsg(self, client, user, channel, msg):
         comm = ch.parseCommand(client.nickname, msg)
         if comm:
-            print comm
             if comm["command"] == "herp":
                 client.msg(channel, "derp")
         
