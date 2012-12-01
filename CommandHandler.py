@@ -58,6 +58,9 @@ def handleCommand(client, user, channel, msg):
         elif command["command"] == "reload":
             client.msg(channel, client.reloadModule(command["args"].strip()))
         
+        elif command["command"] == "reloadHandler":
+            client.msg(channel, client.reloadHandler(command["args"].strip()))
+
         elif command["command"] == "chronicle":
             ticketCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
             number = int(ticketCommand.group("ticketNumber"))

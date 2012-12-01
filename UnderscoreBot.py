@@ -23,7 +23,7 @@ from config import *
 from shadow import chronicle
 from redmine import *
 from RedmineTicketFetcher import RedmineTicketFetcher
-from EasterEggHandler import EasterEggHandler
+import EasterEggHandler
 
 CONFIG_FILE = "config.yaml"
 config = None
@@ -40,7 +40,7 @@ class UnderscoreBot(irc.IRCClient):
         self.redmine_instance = RedmineTicketFetcher(config["redmine"]["url"], config["redmine"]["api_key"])
         self.handlers = {}
         #self.addHandler(EasterEggHandler())
-        self.addHandler("EasterEggHandler")
+        self.addHandler("EasterEggHandler", "EasterEggHandler")
         #self.addHandler(InlineTicketHandler.inlineTicketMatch, "privmsg")
 
     def connectionMade(self):
@@ -68,13 +68,15 @@ class UnderscoreBot(irc.IRCClient):
         if channel == self.nickname:
 			channel = user
         
+        print "Parameters:",user,channel,msg
         CommandHandler.handleCommand(self, user, channel, msg)
-        
+        print "Command Handled"
         #print "Handlers:", self.handlers
         for handler in self.handlers:
+            print handler, dir(self.handlers[handler])
             #print handler, dir(handler)
-            if "privmsg" in dir(handler):
-                handler.privmsg(self, user, channel, msg)
+            if "privmsg" in dir(self.handlers[handler]):
+                self.handlers[handler].privmsg(self, user, channel, msg)
 
     def reloadModule(self, moduleName):
         if moduleName in sys.modules:
@@ -85,16 +87,19 @@ class UnderscoreBot(irc.IRCClient):
             return "No such module"
 
     def reloadHandler(self, handlerName):
-        if handlerName in handlers:
-            handler = handlers[handlerName]
+        if handlerName in self.handlers:
+            handler = self.handlers[handlerName]
             handlerModuleName = handler.__module__
             self.reloadModule(handlerModuleName)
-            handlers[handlerName] = getattr(sys.modules[handlerModuleName], handlerName)()
+            self.handlers[handlerName] = getattr(sys.modules[handlerModuleName], handlerName)()
+            return "Reloading" + str(handlerName)
         else:
             return "No such handler"
 
     def addHandler(self, moduleName, handlerName):
-        print "Loading handler", handler
+        print "Loading handler", handlerName
+        print getattr(sys.modules[moduleName], handlerName)()
+
         self.handlers[handlerName] = getattr(sys.modules[moduleName], handlerName)()
 
     def seeNames(self):
