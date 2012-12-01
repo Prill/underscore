@@ -38,10 +38,9 @@ class UnderscoreBot(irc.IRCClient):
         self.autojoin = autojoin
         self.nickname = nick
         self.redmine_instance = RedmineTicketFetcher(config["redmine"]["url"], config["redmine"]["api_key"])
-        self.handlers = []
-        self.handlerMethods = {}
-        self.addHandler(EasterEggHandler())
-        self.addHandler(InlineTicketHandler.inlineTicketMatch, "privmsg")
+        self.handlers = {}
+        #self.addHandler(EasterEggHandler())
+        #self.addHandler(InlineTicketHandler.inlineTicketMatch, "privmsg")
 
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
@@ -93,21 +92,13 @@ class UnderscoreBot(irc.IRCClient):
             handler = handlers[handlerName]
             handlerModuleName = handler.__module__
             self.reloadModule(handlerModuleName)
-            handlers[handlerName] = getattr(sys.module[handlerModuleName], handlerName)()
+            handlers[handlerName] = getattr(sys.modules[handlerModuleName], handlerName)()
         else:
             return "No such handler"
 
-    def addHandler(self, handler, *triggers):
-        if callable(handler):
-            print "Adding callable handler", handler
-            for trigger in triggers:
-                if trigger not in self.handlerMethods:
-                    self.handlerMethods[trigger] = [handler]
-                else:
-                    self.handlerMethods[trigger].append(handler)
-        else:
-            print "Adding class handler", handler
-            self.handlers.append(handler)
+    def addHandler(self, moduleName, handlerName):
+        print "Loading handler", handler
+        self.handlers[handlerName] = getattr(sys.modules[moduleName], handlerName)()
 
     def seeNames(self):
         return sys.modules
