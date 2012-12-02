@@ -24,5 +24,5 @@ class EasterEggHandler:
         elif (re.search("what day is it\?", msg)):
             client.msg(channel, whatDay())
         elif "reloaded" in msg:
-            client.msg(channel, "It worked! (part 2)")
+            client.msg(channel, "It worked! (part III)")
 

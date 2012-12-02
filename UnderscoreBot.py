@@ -41,6 +41,7 @@ class UnderscoreBot(irc.IRCClient):
         self.handlers = {}
         #self.addHandler(EasterEggHandler())
         self.addHandler("EasterEggHandler", "EasterEggHandler")
+        self.addHandler("InlineTicketHandler", "InlineTicketHandler")
         #self.addHandler(InlineTicketHandler.inlineTicketMatch, "privmsg")
 
     def connectionMade(self):

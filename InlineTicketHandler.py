@@ -8,8 +8,8 @@ from RedmineTicketFetcher import RedmineTicketFetcher
 from shadow import chronicle
 
 class InlineTicketHandler:
-    def __init__(self, url, key):
-        self.rtf = RedmineTicketFetcher(chronicle.URL, chronicle.API_KEY)
+    def privmsg(self, client, user, channel, msg):
+        inlineTicketMatch(client, user, channel, msg)
 
 def formatTicketList(ticketNumbers):
     formattedTickets = map(lambda l : string.join(l, "#"), ticketNumbers)
