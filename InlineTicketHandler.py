@@ -27,14 +27,14 @@ def inlineTicketMatch(client, user, channel, msg):
             ticketType = ticket[0].lower()
             if ticketType in ['','snot']:
                 if int(ticket[1]) >= 1000:
-                    client.msg(channel, sp.formatTicket(int(ticket[1]), "#$number (SNOT) | $from_line | $assigned_to | $subject | $flags"))
+                    client.msg(channel, sp.formatTicket(int(ticket[1]), "$number (SNOT) | $from_line | $assigned_to | $subject | $flags"))
             elif ticketType in ['testsnot']:
-                client.msg(channel, sp.formatTicket(int(ticket[1]), "#$number (TESTSNOT) | $from_line | $assigned_to | $subject | $flags", 'testsnot'))
+                client.msg(channel, sp.formatTicket(int(ticket[1]), "$number (TESTSNOT) | $from_line | $assigned_to | $subject | $flags", 'testsnot'))
             elif ticketType == 'c':
                 try:
                     d = client.redmine_instance.getTicket(int(ticket[1]))
                     if d['project'] != "Mentor Sessions" or channel == "#mentors":
-                        client.msg(channel, str(Template("#$id ($project) | $author | $assigned_to | $subject | $tracker").safe_substitute(d)))
+                        client.msg(channel, str(Template("$id ($project) | $author | $assigned_to | $subject | $tracker").safe_substitute(d)))
                 except Exception as e:
                     print "%s: %s" % (ticket[1], e)
                     client.msg(channel, "%s: %s" % (ticket[1], e))
