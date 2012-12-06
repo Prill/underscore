@@ -16,9 +16,6 @@ def formatTicketList(ticketNumbers):
     return string.join(formattedTickets, ", ")
 
 def inlineTicketMatch(client, user, channel, msg):
-    #ticketNumbers = map(int, re.findall("#(\d{4,})", msg))
-    
-
     ticketNumbers = re.findall("(\w+)?#(\d+)", msg)
     #print ticketNumbers
     if ticketNumbers:
