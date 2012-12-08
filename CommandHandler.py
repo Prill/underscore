@@ -54,6 +54,11 @@ def handleCommand(client, user, channel, msg):
         elif command["command"] == "part":
             channelPart = re.match("(#?\S*)\s*", command["args"])       
             client.leave(channelPart.group(1), "Parting is such sweet sorrow")
+        
+        elif command["command"] == "listHandlers":
+            client.msg(channel, "Current handlers:")
+            for handler in client.handlers:
+                client.msg(channel, handler)
 
         elif command["command"] == "reload":
             client.msg(channel, client.reloadModule(command["args"].strip()))
