@@ -1,0 +1,19 @@
+---
+core:
+    plugins:
+        autoload:
+            - [EasterEggHandler, EasterEggHandler]
+            - [InlineTicketHandler, InlineTicketHandler]
+irc:
+    server: irc.example.com
+    nick:   "underscore"
+    nickserv_password: "pass"
+    channels:
+        - ['#openchan', '']
+        - ['#channel' , 'key']
+
+redmine:
+    url:     "http://redmine.example.com"
+    api_key: "abc123def456" 
+
+...
