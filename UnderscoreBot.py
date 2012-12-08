@@ -19,7 +19,7 @@ import argparse
 # Local imports
 import snotparser.snotparser as sp
 import CommandHandler, InlineTicketHandler
-from config import *
+# from config import *
 from shadow import chronicle
 from redmine import *
 from RedmineTicketFetcher import RedmineTicketFetcher
