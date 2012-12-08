@@ -40,9 +40,8 @@ class UnderscoreBot(irc.IRCClient):
         self.redmine_instance = RedmineTicketFetcher(config["redmine"]["url"], config["redmine"]["api_key"])
         self.handlers = {}
         #self.addHandler(EasterEggHandler())
-        self.addHandler("EasterEggHandler", "EasterEggHandler")
-        self.addHandler("InlineTicketHandler", "InlineTicketHandler")
-        #self.addHandler(InlineTicketHandler.inlineTicketMatch, "privmsg")
+        for plugin in config['core']['plugins']['autoload']:
+            self.addHandler(plugin[0], plugin[1])
 
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
