@@ -43,7 +43,7 @@ class Logger:
     # Writes a line to the specified log (by default "main")
     # ensureWrite specifies whether to automatically call writeToFile after
     # writing the line, thus ensuring the changes are saved.
-    def write(self, message, log="main", ensureWrite=False, echo=True):
+    def write(self, message, log="main", ensureWrite=True, echo=True):
         message = message.strip()
         if echo:
             print message
