@@ -19,6 +19,8 @@ import argparse
 # Local imports
 import snotparser.snotparser as sp
 import CommandHandler, InlineTicketHandler
+from Logger import Logger
+
 # from config import *
 from shadow import chronicle
 from redmine import *
@@ -38,6 +40,8 @@ class UnderscoreBot(irc.IRCClient):
         self.autojoin = autojoin
         self.nickname = nick
         self.redmine_instance = RedmineTicketFetcher(config["redmine"]["url"], config["redmine"]["api_key"])
+        self.logger = Logger("main.log")
+
         self.handlers = {}
         #self.addHandler(EasterEggHandler())
         for plugin in config['core']['plugins']['autoload']:
