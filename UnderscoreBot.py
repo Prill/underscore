@@ -49,6 +49,7 @@ class UnderscoreBot(irc.IRCClient):
 
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
+        self.logger("Connection made")
 
     def connectionLost(self, reason):
         irc.IRCClient.connectionLost(self, reason)
