@@ -51,22 +51,22 @@ def handleCommand(client, user, channel, msg):
                 client.msg(channel, "Joining %s (no key)" % (chan,))
                 client.join(chan)
 
-        elif command["command"] == "part":
+        elif command["command"] in ("part", "leave"):
             channelPart = re.match("(#?\S*)\s*", command["args"])       
             client.leave(channelPart.group(1), "Parting is such sweet sorrow")
         
-        elif command["command"] == "listHandlers":
+        elif command["command"] in ("listHandlers", "lh"):
             client.msg(channel, "Current handlers:")
             for handler in client.handlers:
                 client.msg(channel, handler)
 
-        elif command["command"] == "reload":
+        elif command["command"] in ("reload", "rel"):
             client.msg(channel, client.reloadModule(command["args"].strip()))
         
-        elif command["command"] == "reloadHandler":
+        elif command["command"] in ("reloadHandler", "rh"):
             client.msg(channel, client.reloadHandler(command["args"].strip()))
 
-        elif command["command"] == "chronicle":
+        elif command["command"] in ("chronicle", "chron"):
             ticketCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
             number = int(ticketCommand.group("ticketNumber"))
             try:
