@@ -12,13 +12,16 @@
 import os
 from datetime import datetime
 
+# All filepaths are relative to this folder
+LOG_DIRECTORY = "logs/"
+
 class Logger:
     def __init__(self, mainLogfile):
         self.logfiles = {}
-        self.logfiles["main"] = open(mainLogfile, 'a')
-
+        self.logfiles["main"] = open("logs/" + mainLogfile, 'a')
+    
     def addLogfile(self, name, filepath):
-        self.logfiles[name] = open(filepath, 'a')
+        self.logfiles[name] = open("logs/" + filepath, 'a')
    
     def timestamp(self):
         return datetime.today().strftime("%Y-%m-%d %H:%M:%S\t")
@@ -31,10 +34,18 @@ class Logger:
             for logfile in self.logfiles:
                 self.logfiles[logfile].flush()
                 os.fsync(self.logfiles[logfile])
-
+    
+    # Closes a file and removes it from the list
+    def removeLogfile(self, name):
+        self.logfiles[log].close()
+        del self.logfiles[log]
+    
+    # Writes a line to the specified log (by default "main")
+    # ensureWrite specifies whether to automatically call writeToFile after
+    # writing the line, thus ensuring the changes are saved.
     def write(self, message, log="main", ensureWrite=False):
         message = message.strip()
         self.logfiles[log].write("%s\t%s\n" % (self.timestamp(), message))
         if ensureWrite:
-            writeToFile(log)
+            self.writeToFile(log)
 
