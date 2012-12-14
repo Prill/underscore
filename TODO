@@ -10,9 +10,6 @@ Keep track of state, such as what channels it is currently joined to.
 
 Handle Unicode properly
 
-Ticket Parsing:
-    Convert ticket flags to lowercase (e.g. SNOT -> snot)
-
 Incorporate logwatchbot
 Incorporate voice bot
 
