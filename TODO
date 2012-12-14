@@ -27,3 +27,4 @@ IRC Bot features
     - logwatch bot
 
 Fun snot stuff using the logs
+    - Ticket parsing should work from /me messages
