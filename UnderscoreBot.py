@@ -105,11 +105,13 @@ class UnderscoreBot(irc.IRCClient):
             return "No such handler"
 
     def addHandler(self, moduleName, handlerName):
-        print "Loading handler", handlerName
         self.logger.write("Loading handler %s" % handlerName)
-
-        self.handlers[handlerName] = getattr(sys.modules[moduleName], handlerName)()
-
+        try: 
+            self.handlers[handlerName] = getattr(sys.modules[moduleName], handlerName)()
+        except KeyError:
+            self.logger.write("No such module: %s" % moduleName)
+        except AttributeError:
+            self.logger.write("No such attritube: %s.%s" % (moduleName, handlerName))
     def seeNames(self):
         return sys.modules
     # irc callbacks
