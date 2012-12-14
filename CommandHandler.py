@@ -15,7 +15,7 @@ def handleCommand(client, user, channel, msg):
     command = parseCommand(client.nickname, msg)
      
     if command:
-        print datetime.today().strftime("%Y-%m-%d %H:%M:%S\t"), channel, user + "\t%(command)s: %(args)s" % command
+        self.logger.write(datetime.today().strftime("%Y-%m-%d %H:%M:%S\t"), channel, user + "\t%(command)s: %(args)s" % command)
         if command["command"] == "help":
             client.msg(channel, Help.getHelp(command["args"].strip()))
 

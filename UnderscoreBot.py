@@ -49,20 +49,22 @@ class UnderscoreBot(irc.IRCClient):
 
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
-        self.logger("Connection made")
+        self.logger.write("Connection made")
 
     def connectionLost(self, reason):
         irc.IRCClient.connectionLost(self, reason)
+        self.logger.write("Connection lost")
 
     # callbacks for events
 
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
+        self.logger.write("Signed on")
         self.msg("nickserv", "identify %s" % config["irc"]["nickserv_password"])
         if self.autojoin:
             for channel, key in self.autojoin_list:
                 self.join(channel, key)
-        print "Nick is", self.nickname
+        self.logger.write("Nick is %s" % self.nickname)
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
@@ -84,8 +86,10 @@ class UnderscoreBot(irc.IRCClient):
         if moduleName in sys.modules:
             moduleObject = sys.modules[moduleName]
             reload(moduleObject)
+            self.logger.write("Reloaded" + str(handlerName))
             return "Reloading " + str(moduleName)
         else:
+            self.logger.write("Reload of %s failed; No such module" % moduleName)
             return "No such module"
 
     def reloadHandler(self, handlerName):
@@ -94,13 +98,15 @@ class UnderscoreBot(irc.IRCClient):
             handlerModuleName = handler.__module__
             self.reloadModule(handlerModuleName)
             self.handlers[handlerName] = getattr(sys.modules[handlerModuleName], handlerName)()
+            self.logger.write("Reloaded" + str(handlerName))
             return "Reloading" + str(handlerName)
         else:
+            self.logger.write("Reload of %s failed; No such handler" % handlerName)
             return "No such handler"
 
     def addHandler(self, moduleName, handlerName):
         print "Loading handler", handlerName
-        print getattr(sys.modules[moduleName], handlerName)()
+        self.logger.write("Loading handler %s" % handlerName)
 
         self.handlers[handlerName] = getattr(sys.modules[moduleName], handlerName)()
 
