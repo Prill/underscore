@@ -15,7 +15,7 @@ def handleCommand(client, user, channel, msg):
     command = parseCommand(client.nickname, msg)
      
     if command:
-        self.logger.write(datetime.today().strftime("%Y-%m-%d %H:%M:%S\t"), channel, user + "\t%(command)s: %(args)s" % command)
+        client.logger.write("Command in %s from %s: %s: '%s'" % (channel, user, command["command"], command["args"]))
         if command["command"] == "help":
             client.msg(channel, Help.getHelp(command["args"].strip()))
 
@@ -73,5 +73,5 @@ def handleCommand(client, user, channel, msg):
                 d = client.redmine_instance.getTicket(number)
                 client.msg(channel, str(Template("#$id ($project) | $author | $assigned_to | $subject | $tracker").safe_substitute(d)))
             except urllib2.HTTPError as e:
-                print type(e)
+                client.logger.write(str(type(e)))
                 client.msg(channel, str(e))

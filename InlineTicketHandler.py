@@ -19,7 +19,7 @@ def inlineTicketMatch(client, user, channel, msg):
     ticketNumbers = re.findall("(\w+)?#(\d+)", msg)
     #print ticketNumbers
     if ticketNumbers:
-        print datetime.today().strftime("%Y-%m-%d %H:%M:%S\t"), user, "requested ticket(s)", formatTicketList(ticketNumbers), "in", channel
+        client.logger.write("%s\t%s requested ticket(s) %s in %s" % (datetime.today().strftime("%Y-%m-%d %H:%M:%S"), user, formatTicketList(ticketNumbers), channel))
         for ticket in ticketNumbers:
             ticketType = ticket[0].lower()
             if ticketType in ['','snot']:
