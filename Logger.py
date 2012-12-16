@@ -45,9 +45,10 @@ class Logger:
     # writing the line, thus ensuring the changes are saved.
     def write(self, message, log="main", ensureWrite=True, echo=True):
         message = message.strip()
+        logEntry = "%s\t%s" % (self.timestamp(), message)
         if echo:
-            print message
-        self.logfiles[log].write("%s\t%s\n" % (self.timestamp(), message))
+            print logEntry
+        self.logfiles[log].write(logEntry + '\n')
         if ensureWrite:
             self.writeToFile(log)
 
