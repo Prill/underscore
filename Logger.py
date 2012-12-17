@@ -43,11 +43,12 @@ class Logger:
     # Writes a line to the specified log (by default "main")
     # ensureWrite specifies whether to automatically call writeToFile after
     # writing the line, thus ensuring the changes are saved.
-    def write(self, message, log="main", ensureWrite=True, echo=True):
+    def write(self, message, log="main", ensureWrite=True, echo=True, trailingNewline=True):
         message = message.strip()
+        if trailingNewline:
+            message += "\n"
         if echo:
-            print message
-        self.logfiles[log].write("%s\t%s\n" % (self.timestamp(), message))
+            print message,
+        self.logfiles[log].write("%s\t%s" % (self.timestamp(), message))
         if ensureWrite:
             self.writeToFile(log)
-
