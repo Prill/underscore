@@ -25,7 +25,8 @@ class Logger:
    
     def timestamp(self):
         return datetime.today().strftime("%Y-%m-%d %H:%M:%S\t")
-    
+
+    # Forces the logger to flush the stream and write the log to disk
     def writeToFile(self, log = None):
         if log:
             self.logfiles[log].flush()
