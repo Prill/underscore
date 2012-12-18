@@ -15,6 +15,19 @@ def formatTicketList(ticketNumbers):
     formattedTickets = map(lambda l : string.join(l, "#"), ticketNumbers)
     return string.join(formattedTickets, ", ")
 
+def formatTicketString(ticketDict, formatString): 
+    # formatString will be in the form of "assigned_to,from_line,subject" csv
+    formatKeys = formatString.split(',')
+    formattedItems = []
+    for key in formatKeys:
+        key = key.strip()
+        if key == "from_line":
+            formattedItems.append(ticketDict["from_line"])
+        else:
+            if key in ticketDict and ticketDict[key].strip():
+                formattedItems.append(ticketDict[key])
+    return string.join(formattedItems, " | ")
+
 def inlineTicketMatch(client, user, channel, msg):
     ticketNumbers = re.findall("(\w+)?#(\d+)", msg)
     #print ticketNumbers
@@ -24,7 +37,8 @@ def inlineTicketMatch(client, user, channel, msg):
             ticketType = ticket[0].lower()
             if ticketType in ['','snot']:
                 if int(ticket[1]) >= 1000:
-                    client.msg(channel, sp.formatTicket(int(ticket[1]), "$number (SNOT) | $from_line | $assigned_to | $subject | $flags"))
+                    client.msg(channel, formatTicketString(sp.parseTicket(int(ticket[1])), "number, from_line, assigned_to, subject, flags"))
+                    # client.msg(channel, sp.formatTicket(int(ticket[1]), "$number (SNOT) | $from_line | $assigned_to | $subject | $flags"))
             elif ticketType in ['testsnot']:
                 client.msg(channel, sp.formatTicket(int(ticket[1]), "$number (TESTSNOT) | $from_line | $assigned_to | $subject | $flags", 'testsnot'))
             elif ticketType == 'c':
