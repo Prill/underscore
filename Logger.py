@@ -25,7 +25,8 @@ class Logger:
    
     def timestamp(self):
         return datetime.today().strftime("%Y-%m-%d %H:%M:%S\t")
-    
+
+    # Forces the logger to flush the stream and write the log to disk
     def writeToFile(self, log = None):
         if log:
             self.logfiles[log].flush()
@@ -43,12 +44,12 @@ class Logger:
     # Writes a line to the specified log (by default "main")
     # ensureWrite specifies whether to automatically call writeToFile after
     # writing the line, thus ensuring the changes are saved.
-    def write(self, message, log="main", ensureWrite=True, echo=True):
+    def write(self, message, log="main", ensureWrite=True, echo=True, trailingNewline=True):
         message = message.strip()
-        logEntry = "%s\t%s" % (self.timestamp(), message)
+        if trailingNewline:
+            message += "\n"
         if echo:
-            print logEntry
-        self.logfiles[log].write(logEntry + '\n')
+            print message,
+        self.logfiles[log].write("%s\t%s" % (self.timestamp(), message))
         if ensureWrite:
             self.writeToFile(log)
-
