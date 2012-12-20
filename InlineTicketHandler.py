@@ -17,6 +17,9 @@ def formatTicketList(ticketNumbers):
 
 def formatTicketString(ticketDict, formatString): 
     # formatString will be in the form of "assigned_to,from_line,subject" csv
+    if not ticketDict:
+        return "No such ticket"
+
     formatKeys = formatString.split(',')
     formattedItems = []
     for key in formatKeys:
