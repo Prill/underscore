@@ -86,8 +86,8 @@ class UnderscoreBot(irc.IRCClient):
         if moduleName in sys.modules:
             moduleObject = sys.modules[moduleName]
             reload(moduleObject)
-            self.logger.write("Reloaded" + str(handlerName))
-            return "Reloading " + str(moduleName)
+            self.logger.write("Reloaded module " + str(moduleName))
+            return "Reloading module " + str(moduleName)
         else:
             self.logger.write("Reload of %s failed; No such module" % moduleName)
             return "No such module"
@@ -98,8 +98,8 @@ class UnderscoreBot(irc.IRCClient):
             handlerModuleName = handler.__module__
             self.reloadModule(handlerModuleName)
             self.handlers[handlerName] = getattr(sys.modules[handlerModuleName], handlerName)()
-            self.logger.write("Reloaded" + str(handlerName))
-            return "Reloading" + str(handlerName)
+            self.logger.write("Reloaded handler " + str(handlerName))
+            return "Reloaded handler " + str(handlerName)
         else:
             self.logger.write("Reload of %s failed; No such handler" % handlerName)
             return "No such handler"
