@@ -26,10 +26,8 @@ def formatTicketString(ticketDict, formatString):
         key = key.strip()
         if key == "from":
             from_line = ticketDict["from_line"]
-            print from_line
             emailRegex = '\s?(?P<email>(?P<username>\S+?)@(?P<domain>\S+?))\s?'
             m = re.match(r"^%s(\s.*)?$" % emailRegex, from_line) or re.match(r'^\s*?"?(?P<name>.+?)"? \<%s\>' % emailRegex, from_line)
-            print m.groupdict()
             if m:
                 md = m.groupdict()
                 emailFormatted = md["email"]
