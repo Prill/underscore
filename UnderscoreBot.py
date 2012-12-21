@@ -60,7 +60,8 @@ class UnderscoreBot(irc.IRCClient):
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
         self.logger.write("Signed on")
-        self.msg("nickserv", "identify %s" % config["irc"]["nickserv_password"])
+        self.logger.write("Identifying to nickserv as %s" % (config['irc']['nick']))
+        self.msg("nickserv", "identify %s %s" % (config["irc"]["nick"], config["irc"]["nickserv_password"]))
         if self.autojoin:
             for channel, key in self.autojoin_list:
                 self.join(channel, key)
@@ -81,6 +82,13 @@ class UnderscoreBot(irc.IRCClient):
             #print handler, dir(handler)
             if "privmsg" in dir(self.handlers[handler]):
                 self.handlers[handler].privmsg(self, user, channel, msg)
+    def action(self, user, channel, data):
+        nick = user.split('!', 1)[0]
+        (username, host) = user.split('@', 1)
+
+        for handler in self.handlers:
+            if "action" in dir(self.handlers[handler]):
+                self.handlers[handler].action(self, nick, channel, data)
 
     def reloadModule(self, moduleName):
         if moduleName in sys.modules:
