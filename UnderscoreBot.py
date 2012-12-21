@@ -88,7 +88,7 @@ class UnderscoreBot(irc.IRCClient):
 
         for handler in self.handlers:
             if "action" in dir(self.handlers[handler]):
-                self.handlers[handler].action(self, nick, 
+                self.handlers[handler].action(self, nick, channel, action)
 
     def reloadModule(self, moduleName):
         if moduleName in sys.modules:

@@ -10,6 +10,8 @@ from shadow import chronicle
 class InlineTicketHandler:
     def privmsg(self, client, user, channel, msg):
         inlineTicketMatch(client, user, channel, msg)
+    def action(self, client, nick, channel, msg):
+        inlineTicketMatch(client, nick, channel, msg)
 
 def formatTicketList(ticketNumbers):
     formattedTickets = map(lambda l : string.join(l, "#"), ticketNumbers)
