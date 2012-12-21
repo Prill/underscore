@@ -1,5 +1,0 @@
----
-about: "This is a general-purpose written by Max Schwarz for theCAT <cat.pdx.edu>"
-source: "The source for this bot may be found at github.com/Prill/underscore"
-snotparsing: "This bot watches for mentions of ticket numbers (e.g. #123123) and spits out helpful information"
-commands: "Documentation is forthcoming"
