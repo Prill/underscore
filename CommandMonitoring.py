@@ -12,5 +12,11 @@ def monitorFile(filepath, function):
 
 # Monitor the output of a command and called function(line) with each new line
 # of output the command generates.
-def monitorCommand(command, args, function):
-    pass
+# Input:
+#   args: An iteratable list of arguments (including the command name). For
+#   example, passing ("ls", "-l") would be the equivalent of calling `ls -l`
+#   from the command line.
+def monitorCommand(args, function):
+    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    for line in iter(p.stdout.readline,''):
+        function(line)
