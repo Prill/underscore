@@ -5,3 +5,7 @@
 # arrives. Or have it tell people when somebody assigned a ticket to them. The
 # possibilities are endless
 
+def monitorLogs(client):
+    pass
+
+
