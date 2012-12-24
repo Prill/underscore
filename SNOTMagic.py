@@ -5,3 +5,6 @@
 # arrives. Or have it tell people when somebody assigned a ticket to them. The
 # possibilities are endless
 
+# Main function to be called in a subthread by the main program
+def monitorLogs(client):
+    pass
