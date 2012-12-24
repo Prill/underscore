@@ -26,4 +26,4 @@ def monitorCommand(args, function):
 #       method is first called. Defaults to 0, meaning only lines add to the
 #       file since the monitoring started will be seen.
 def monitorFile(filepath, function, backScroll=0):
-    monitorFile(["tail", "-fn", str(backScroll), filepath], function)
+    monitorCommand(["tail", "-fn", str(backScroll), filepath], function)
