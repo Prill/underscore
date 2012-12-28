@@ -18,7 +18,9 @@ with open(CONFIG_FILE) as cfgFile:
 # Function that creates another function that is called with the contents of
 # each line of the snot log.
 def makeSNOTLogHandler(client):
-    client.msg(config['snot']['snot_channel'])
+    def handleSNOTLogLine(line):
+        client.msg(config['snot']['snot_channel'], line)
+    return handleSNOTLogLine
 
 # Main function to be called in a subthread by the main program
 def monitorLogs(client):
