@@ -20,6 +20,7 @@ import argparse
 import snotparser.snotparser as sp
 import CommandHandler, InlineTicketHandler
 from Logger import Logger
+import SNOTMagic
 
 # from config import *
 from shadow import chronicle
@@ -41,7 +42,6 @@ class UnderscoreBot(irc.IRCClient):
         self.nickname = nick
         self.redmine_instance = RedmineTicketFetcher(config["redmine"]["url"], config["redmine"]["api_key"])
         self.logger = Logger("main.log")
-
         self.handlers = {}
         #self.addHandler(EasterEggHandler())
         for plugin in config['core']['plugins']['autoload']:
@@ -66,6 +66,8 @@ class UnderscoreBot(irc.IRCClient):
             for channel, key in self.autojoin_list:
                 self.join(channel, key)
         self.logger.write("Nick is %s" % self.nickname)
+        self.logger.write("Calling snot monitoring in subthread")
+        reactor.callInThread(SNOTMagic.monitorLogs, self)
 
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
