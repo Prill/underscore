@@ -7,6 +7,7 @@
 
 import CommandMonitoring as cm
 import yaml
+from twisted.internet import reactor
 
 # Import YAML configuration. This should really be consolidated into one
 # dictionary that can be accessed from multiple places. 
@@ -20,6 +21,8 @@ with open(CONFIG_FILE) as cfgFile:
 def makeSNOTLogHandler(client):
     def handleSNOTLogLine(line):
         client.msg(config['snot']['snot_channel'], line)
+        reactor.wakeUp()
+
     return handleSNOTLogLine
 
 # Main function to be called in a subthread by the main program
