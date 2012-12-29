@@ -4,6 +4,8 @@ import snotparser.snotparser as sp
 import Help
 from string import Template
 from datetime import datetime
+#import UnderscoreBot
+
 def parseCommand(prefix, msg):
     command = re.match("^" + prefix + ":?\s*(?P<command>\S*)\s*(?P<args>.*)", msg)
     if command:
@@ -65,6 +67,11 @@ def handleCommand(client, user, channel, msg):
         
         elif command["command"] in ("reloadHandler", "rh"):
             client.msg(channel, client.reloadHandler(command["args"].strip()))
+
+#        elif command["command"] in ("reloadConfig", "rc"):
+#            CONFIG_FILE = "config.yaml"
+#            with open(CONFIG_FILE) as cfgFile:
+#                UnderscoreBot.config = yaml.load(cfgFile)
 
         elif command["command"] in ("chronicle", "chron"):
             ticketCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
