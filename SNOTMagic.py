@@ -34,7 +34,8 @@ def makeSNOTLogHandler(client):
                 message = "#{tkt} flagged as {to} by {by}".format(**mdict)
                 if mdict['to'] in config['snot']['alerts']['flag']:
                     for target in config['snot']['alerts']['flag'][mdict['to']]:
-                        client.msg(target, message)
+                        client.msg(target, formattedTicket)
+                return
             elif cmd == "recv":
                 message = "Received ticket #{tkt} from {by}".format(**mdict)
             elif cmd == "resp":
