@@ -27,7 +27,7 @@ def makeSNOTLogHandler(client):
         if match:
             mdict = match.groupdict()
             message = str(mdict)
-            formattedTicket = sp.formatTicket(int(mdict["tkt"]), "$from_line | $assigned_to | $subject | $flags")
+            formattedTicket = sp.formatTicketSmart(int(mdict['tkt']), config['snot']['formatString'])
             # "Case" statement for various ticket commands
             cmd = mdict["cmd"].lower()
             if cmd == "flags":
