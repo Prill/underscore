@@ -6,7 +6,7 @@
 # possibilities are endless
 
 import CommandMonitoring as cm
-import yaml, re
+import yaml, re, string
 import snotparser.snotparser as sp
 from twisted.internet import reactor
 
@@ -35,6 +35,8 @@ def makeSNOTLogHandler(client):
                 if mdict['to'] in config['snot']['alerts']['flag']:
                     for target in config['snot']['alerts']['flag'][mdict['to']]:
                         client.msg(target, formattedTicket)
+                client.logger.write("SNOTMagic: Message '%s' sent to %s" % (formattedTicket, string.join(config['snot']['alerts']['flag'][mdict['to']], ", ")) )
+                reactor.wakeUp()
                 return
             elif cmd == "recv":
                 message = "Received ticket #{tkt} from {by}".format(**mdict)
@@ -48,6 +50,7 @@ def makeSNOTLogHandler(client):
                 message = "#{tkt} appended to #{to} by {by}".format(**mdict)
             else:
                 message = line
+            client.logger.write("SNOTMagic: Message '%s' sent to %s" % (message, config['snot']['snot_channel']))
             client.msg(config['snot']['snot_channel'], message)
         else:
             client.msg("#snot", "Could not match '%s'" % line)
