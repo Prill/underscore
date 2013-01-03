@@ -34,8 +34,8 @@ def makeSNOTLogHandler(client):
                 message = "#{tkt} flagged as {to} by {by}".format(**mdict)
                 if mdict['to'] in config['snot']['alerts']['flag']:
                     for target in config['snot']['alerts']['flag'][mdict['to']]:
-                        client.msg(target, formattedTicket)
-                client.logger.write("SNOTMagic: Message '%s' sent to %s" % (formattedTicket, string.join(config['snot']['alerts']['flag'][mdict['to']], ", ")) )
+                        client.msg(target, "Flagged as %s: %s" % (mdict['to'], formattedTicket))
+                        client.logger.write("SNOTMagic: Message '%s' sent to %s" % (formattedTicket, string.join(config['snot']['alerts']['flag'][mdict['to']], ", ")) )
                 reactor.wakeUp()
                 return
             elif cmd == "recv":
