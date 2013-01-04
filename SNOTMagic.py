@@ -48,6 +48,10 @@ def makeSNOTLogHandler(client):
                 message = "#{tkt} updated by {by}".format(**mdict)
             elif cmd == "append":
                 message = "#{tkt} appended to #{to} by {by}".format(**mdict)
+            elif cmd == "autoresolve":
+                message = "#{tkt} autoresolved - ({dalian})".format(**mdict)
+            elif cmd == "priority" or cmd == "autopriority":
+                message = "#{tkt} priority set to {to} by {by}".format(**mdict)
             else:
                 message = line
             client.logger.write("SNOTMagic: Message '%s' sent to %s" % (message, config['snot']['snot_channel']))
