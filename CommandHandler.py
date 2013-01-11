@@ -1,7 +1,9 @@
 import re
 import urllib2
 import snotparser.snotparser as sp
+import SNOTMagic
 import Help
+from twisted.internet import reactor
 from string import Template
 from datetime import datetime
 #import UnderscoreBot
@@ -72,6 +74,10 @@ def handleCommand(client, user, channel, msg):
 #            CONFIG_FILE = "config.yaml"
 #            with open(CONFIG_FILE) as cfgFile:
 #                UnderscoreBot.config = yaml.load(cfgFile)
+
+        elif command["command"] in ("startSNOTMonitoring", "ssm"):
+            client.logger.write("Calling snot monitoring in subthread")
+            reactor.callInThread(SNOTMagic.monitorLogs, client)
 
         elif command["command"] in ("chronicle", "chron"):
             ticketCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
