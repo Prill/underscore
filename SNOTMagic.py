@@ -37,7 +37,6 @@ def makeSNOTLogHandler(client):
                         client.notice(target, "Flagged as %s: %s" % (mdict['to'], formattedTicket))
                         client.logger.write("SNOTMagic: Message '%s' sent to %s" % (formattedTicket, string.join(config['snot']['alerts']['flag'][mdict['to']], ", ")) )
                 reactor.wakeUp()
-                return
             elif cmd == "recv":
                 message = "Received ticket #{tkt} from {by}".format(**mdict)
             elif cmd == "resp":
@@ -54,7 +53,7 @@ def makeSNOTLogHandler(client):
                 message = "#{tkt} priority set to {to} by {by}".format(**mdict)
             else:
                 message = line
-            client.logger.write("SNOTMagic: Message '%s' sent to %s" % (message, config['snot']['snot_channel']))
+            #client.logger.write("SNOTMagic: Message '%s' sent to %s" % (message, config['snot']['snot_channel']))
             client.msg(config['snot']['snot_channel'], message)
         else:
             client.msg("#snot", "Could not match '%s'" % line)
