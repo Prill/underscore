@@ -50,7 +50,8 @@ def makeSNOTLogHandler(client):
             elif cmd == "delete":
                 message = "#{tkt} deleted by {by}".format(**mdict)
             elif cmd == "update":
-                message = "#{tkt} updated by {by}".format(**mdict)
+                message = "#{tkt} (\"" + ticketDict['subject'] + "\") updated by {by}"
+                message = message.format(**mdict)
             elif cmd == "append":
                 message = "#{tkt} appended to #{to} by {by}".format(**mdict)
             elif cmd == "autoresolve":
