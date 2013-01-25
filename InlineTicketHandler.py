@@ -25,7 +25,7 @@ def inlineTicketMatch(client, user, channel, msg):
         client.logger.write("%s requested ticket(s) %s in %s" % (user, formatTicketList(ticketNumbers), channel))
         for ticket in ticketNumbers:
             ticketType = ticket[0].lower()
-            if ticketType in ['','snot']:
+            if ticketType in ['','snot','tts']:
                 if int(ticket[1]) >= 1000:
                     client.msg(channel, sp.formatTicketSmart(int(ticket[1]), config['snot']['formatString']))
                     # client.msg(channel, sp.formatTicket(int(ticket[1]), "$number (SNOT) | $from_line | $assigned_to | $subject | $flags"))
