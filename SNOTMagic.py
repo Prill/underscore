@@ -27,11 +27,13 @@ def makeSNOTLogHandler(client):
         if match:
             mdict = match.groupdict()
             message = str(mdict)
-            formattedTicket = sp.formatTicketSmart(int(mdict['tkt']), config['snot']['formatString'])
+            ticketDict = sp.parseTicket(int(mdict['tkt']))
+            formattedTicket = sp.formatTicketDictSmart(ticketDict, config['snot']['formatString'])
             # "Case" statement for various ticket commands
             cmd = mdict["cmd"].lower()
             if cmd == "flags":
-                message = "#{tkt} flagged as {to} by {by}".format(**mdict)
+                message = "#{tkt} (\"" + ticketDict['subject'] + "\") flagged as {to} by {by}"
+                message = message.format(**mdict)
                 if mdict['to'] in config['snot']['alerts']['flag']:
                     for target in config['snot']['alerts']['flag'][mdict['to']]:
                         client.notice(target, "Flagged as %s: %s" % (mdict['to'], formattedTicket))
@@ -40,6 +42,7 @@ def makeSNOTLogHandler(client):
             elif cmd == "recv":
                 client.msg(config['snot']['snot_channel'], "Received ticket #{tkt} from {by}".format(**mdict))
                 client.msg(config['snot']['snot_channel'], formattedTicket)
+                return
             elif cmd == "resp":
                 message = "{by} assigned #{tkt} to {to}".format(**mdict)
             elif cmd == "complete":
