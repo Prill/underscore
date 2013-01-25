@@ -38,17 +38,20 @@ def makeSNOTLogHandler(client):
                         client.logger.write("SNOTMagic: Message '%s' sent to %s" % (formattedTicket, string.join(config['snot']['alerts']['flag'][mdict['to']], ", ")) )
                 reactor.wakeUp()
             elif cmd == "recv":
-                message = "Received ticket #{tkt} from {by}".format(**mdict)
+                client.msg(config['snot']['snot_channel'], "Received ticket #{tkt} from {by}".format(**mdict))
+                client.msg(config['snot']['snot_channel'], formattedTicket)
             elif cmd == "resp":
                 message = "{by} assigned #{tkt} to {to}".format(**mdict)
             elif cmd == "complete":
                 message = "#{tkt} completed by {by}".format(**mdict)
+            elif cmd == "delete":
+                message = "#{tkt} deleted by {by}".format(**mdict)
             elif cmd == "update":
                 message = "#{tkt} updated by {by}".format(**mdict)
             elif cmd == "append":
                 message = "#{tkt} appended to #{to} by {by}".format(**mdict)
             elif cmd == "autoresolve":
-                message = "#{tkt} autoresolved - ({dalian})".format(**mdict)
+                message = "#{tkt} autoresolved - ({by})".format(**mdict)
             elif cmd == "priority" or cmd == "autopriority":
                 message = "#{tkt} priority set to {to} by {by}".format(**mdict)
             else:
