@@ -25,43 +25,50 @@ def makeSNOTLogHandler(client):
         regex = r"^(?P<date>.+?) CMD: (?P<cmd>\w+?) TKT: (?P<tkt>\d+?) BY: (?P<by>.+?)($| TO: (?P<to>.+))?$"
         match = re.match(regex, line)
         if match:
-            mdict = match.groupdict()
-            message = str(mdict)
-            ticketDict = sp.parseTicket(int(mdict['tkt']))
-            formattedTicket = sp.formatTicketDictSmart(ticketDict, config['snot']['formatString'])
-            # "Case" statement for various ticket commands
-            cmd = mdict["cmd"].lower()
-            if cmd == "flags":
-                message = "#{tkt} (\"" + ticketDict['subject'] + "\") flagged as {to} by {by}"
-                message = message.format(**mdict)
-                if mdict['to'] in config['snot']['alerts']['flag']:
-                    for target in config['snot']['alerts']['flag'][mdict['to']]:
-                        client.notice(target, "Flagged as %s: %s" % (mdict['to'], formattedTicket))
-                        client.logger.write("SNOTMagic: Message '%s' sent to %s" % (formattedTicket, string.join(config['snot']['alerts']['flag'][mdict['to']], ", ")) )
-                reactor.wakeUp()
-            elif cmd == "recv":
-                client.msg(config['snot']['snot_channel'], "Received ticket #{tkt} from {by}".format(**mdict))
-                client.msg(config['snot']['snot_channel'], formattedTicket)
-                return
-            elif cmd == "resp":
-                message = "{by} assigned #{tkt} to {to}".format(**mdict)
-            elif cmd == "complete":
-                message = "#{tkt} completed by {by}".format(**mdict)
-            elif cmd == "delete":
-                message = "#{tkt} deleted by {by}".format(**mdict)
-            elif cmd == "update":
-                message = "#{tkt} (\"" + ticketDict['subject'] + "\") updated by {by}"
-                message = message.format(**mdict)
-            elif cmd == "append":
-                message = "#{tkt} appended to #{to} by {by}".format(**mdict)
-            elif cmd == "autoresolve":
-                message = "#{tkt} autoresolved - ({by})".format(**mdict)
-            elif cmd == "priority" or cmd == "autopriority":
-                message = "#{tkt} priority set to {to} by {by}".format(**mdict)
-            else:
-                message = line
-            #client.logger.write("SNOTMagic: Message '%s' sent to %s" % (message, config['snot']['snot_channel']))
-            client.msg(config['snot']['snot_channel'], message)
+            try:
+                mdict = match.groupdict()
+                message = str(mdict)
+                ticketDict = sp.parseTicket(int(mdict['tkt']))
+                formattedTicket = sp.formatTicketDictSmart(ticketDict, config['snot']['formatString'])
+                # "Case" statement for various ticket commands
+                cmd = mdict["cmd"].lower()
+                if cmd == "flags":
+                    message = "#{tkt} (\"" + ticketDict['subject'] + "\") flagged as {to} by {by}"
+                    message = message.format(**mdict)
+                    if mdict['to'] in config['snot']['alerts']['flag']:
+                        for target in config['snot']['alerts']['flag'][mdict['to']]:
+                            client.notice(target, "Flagged as %s: %s" % (mdict['to'], formattedTicket))
+                            client.logger.write("SNOTMagic: Message '%s' sent to %s" % (formattedTicket, string.join(config['snot']['alerts']['flag'][mdict['to']], ", ")) )
+                    reactor.wakeUp()
+                elif cmd == "recv":
+                    client.msg(config['snot']['snot_channel'], "Received ticket #{tkt} from {by}".format(**mdict))
+                    client.msg(config['snot']['snot_channel'], formattedTicket)
+                    return
+                elif cmd == "resp":
+                    message = "{by} assigned #{tkt} to {to}".format(**mdict)
+                elif cmd == "complete":
+                    message = "#{tkt} completed by {by}".format(**mdict)
+                elif cmd == "delete":
+                    message = "#{tkt} deleted by {by}".format(**mdict)
+                elif cmd == "update":
+                    message = "#{tkt} (\"" + ticketDict['subject'] + "\") updated by {by}"
+                    message = message.format(**mdict)
+                elif cmd == "append":
+                    message = "#{tkt} appended to #{to} by {by}".format(**mdict)
+                elif cmd == "autoresolve":
+                    message = "#{tkt} autoresolved - ({by})".format(**mdict)
+                elif cmd == "priority" or cmd == "autopriority":
+                    message = "#{tkt} priority set to {to} by {by}".format(**mdict)
+                else:
+                    message = line
+                #client.logger.write("SNOTMagic: Message '%s' sent to %s" % (message, config['snot']['snot_channel']))
+                client.msg(config['snot']['snot_channel'], message)
+            except KeyError as ke:
+                client.logger.write(str(ke))
+                client.msg(config['snot']['snot_channel'], str(ke))
+            except TypeError as te:
+                client.logger.write(str(te))
+                client.msg(config['snot']['snot_channel'], str(te))
         else:
             client.msg("#snot", "Could not match '%s'" % line)
         reactor.wakeUp()
