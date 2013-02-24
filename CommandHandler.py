@@ -94,3 +94,5 @@ def handleCommand(client, user, channel, msg):
             except urllib2.HTTPError as e:
                 client.logger.write(str(type(e)))
                 client.msg(channel, str(e))
+        else:
+            print "Unrecognized command" 
