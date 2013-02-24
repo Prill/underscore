@@ -77,7 +77,13 @@ def handleCommand(client, user, channel, msg):
 
         elif command["command"] in ("startSNOTMonitoring", "ssm"):
             client.logger.write("Calling snot monitoring in subthread")
+            client.msg(channel, "Restarting snot monitoring")
             reactor.callInThread(SNOTMagic.monitorLogs, client)
+
+        elif command["command"] in ("ticketHistory", "th"):
+            lines = sp.getTicketHistory(command["args"])
+            for line in lines:
+                client.msg(channel, line.strip())
 
         elif command["command"] in ("chronicle", "chron"):
             ticketCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
