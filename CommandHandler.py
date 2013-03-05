@@ -81,9 +81,12 @@ def handleCommand(client, user, channel, msg):
             reactor.callInThread(SNOTMagic.monitorLogs, client)
 
         elif command["command"] in ("ticketHistory", "th"):
-            lines = sp.getTicketHistory(command["args"])
-            for line in lines:
-                client.msg(channel, line.strip())
+            try:
+                lines = sp.getTicketHistory(command["args"])
+                for line in lines:
+                    client.msg(channel, line.strip())
+            except ValueError as e:
+                client.msg(channel, "Invalid argument")
 
         elif command["command"] in ("chronicle", "chron"):
             ticketCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
