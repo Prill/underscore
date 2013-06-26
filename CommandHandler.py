@@ -77,7 +77,16 @@ def handleCommand(client, user, channel, msg):
 
         elif command["command"] in ("startSNOTMonitoring", "ssm"):
             client.logger.write("Calling snot monitoring in subthread")
+            client.msg(channel, "Restarting snot monitoring")
             reactor.callInThread(SNOTMagic.monitorLogs, client)
+
+        elif command["command"] in ("ticketHistory", "th"):
+            try:
+                lines = sp.getTicketHistory(command["args"])
+                for line in lines:
+                    client.msg(channel, line.strip())
+            except ValueError as e:
+                client.msg(channel, "Invalid argument")
 
         elif command["command"] in ("chronicle", "chron"):
             ticketCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
@@ -88,3 +97,5 @@ def handleCommand(client, user, channel, msg):
             except urllib2.HTTPError as e:
                 client.logger.write(str(type(e)))
                 client.msg(channel, str(e))
+        else:
+            print "Unrecognized command" 

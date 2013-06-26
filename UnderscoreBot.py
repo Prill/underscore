@@ -24,7 +24,6 @@ import SNOTMagic
 
 # from config import *
 from shadow import chronicle
-from redmine import *
 from RedmineTicketFetcher import RedmineTicketFetcher
 import EasterEggHandler
 
