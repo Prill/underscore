@@ -41,10 +41,26 @@ class UnderscoreBot(irc.IRCClient):
         self.nickname = nick
         self.redmine_instance = RedmineTicketFetcher(config["redmine"]["url"], config["redmine"]["api_key"])
         self.logger = Logger("main.log")
+        self.logger.addLogfile("raw", "raw.log")
         self.handlers = {}
+        self.callbacks = {}
         #self.addHandler(EasterEggHandler())
         for plugin in config['core']['plugins']['autoload']:
             self.addHandler(plugin[0], plugin[1])
+    
+    def addCallback(self, event, function):
+        if event not in self.callbacks:
+            self.callbacks[event] = []
+        self.callbacks[event].append(function)
+        print "Added %s callback: %s" % (event, function)
+
+    def runCallbacks(self, event, *args):
+        print "Running callbacks for %s with args %s" % (event, args)
+        if event in self.callbacks:
+            self.callbacks[event][:] = [x for x in self.callbacks[event] if not x(*args)]
+    #        for callback in self.callbacks[event]:
+    #            callback(*args)
+    #        self.callbacks[event] = []
 
     def connectionMade(self):
         irc.IRCClient.connectionMade(self)
@@ -54,7 +70,22 @@ class UnderscoreBot(irc.IRCClient):
         irc.IRCClient.connectionLost(self, reason)
         self.logger.write("Connection lost")
 
-    # callbacks for events
+    def lineReceived(self, line):
+        self.logger.write(" --> " + line, "raw", echo=False)
+        irc.IRCClient.lineReceived(self, line)
+
+    def sendLine(self, line):
+        self.logger.write(" <-- " + line, "raw", echo=False)
+        irc.IRCClient.sendLine(self, line)
+
+    def irc_unknown(self, prefix, command, params):
+        if command == "RPL_CHANNELMODEIS":
+            self.runCallbacks("RPL_CHANNELMODEIS", *params)
+        #print "irc_unknown"
+        #print "\t" + str(prefix);
+        # print "\t" + str(type(command))
+        # print "\t" + str(command)
+        print "\t%s: %s" % (command, params)
 
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
@@ -68,10 +99,25 @@ class UnderscoreBot(irc.IRCClient):
         self.logger.write("Calling snot monitoring in subthread")
         reactor.callInThread(SNOTMagic.monitorLogs, self)
 
+    def isAChannel(self,target):
+        if len(target) > 0 and target[0] in ("#", "&", "+", "!"):
+            return True;
+        else:
+            return False;
+
     def privmsg(self, user, channel, msg):
         """This will get called when the bot receives a message."""
         user = user.split('!', 1)[0]
         
+        #self.mode("#wrentest2", True, "c");
+        if msg == "modes?":
+            def channelModeCB(rplNick, rplChannel, rplModes, *rplValues):
+                self.msg(channel, "The mode for %s is %s" % (rplChannel,rplModes))
+                return True
+            if self.isAChannel(channel):
+                self.addCallback("RPL_CHANNELMODEIS", channelModeCB)
+            self.sendLine("MODE %s" % channel)
+
         # Check to see if they're sending me a private message
         # TODO: This should be cleaned up to be less confusing in terms of channel vs user
         if channel == self.nickname:
