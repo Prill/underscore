@@ -43,21 +43,19 @@ class UnderscoreBot(irc.IRCClient):
         self.logger = Logger("main.log")
         self.logger.addLogfile("raw", "raw.log")
         self.handlers = {}
-        self.callbacks = {}
+        self.callbacks = []
         #self.addHandler(EasterEggHandler())
         for plugin in config['core']['plugins']['autoload']:
             self.addHandler(plugin[0], plugin[1])
     
-    def addCallback(self, event, function):
-        if event not in self.callbacks:
-            self.callbacks[event] = []
-        self.callbacks[event].append(function)
-        print "Added %s callback: %s" % (event, function)
+    def addCallback(self, function):
+        self.callbacks.append(function)
+        print "Added callback: %s" % function
 
-    def runCallbacks(self, event, *args):
-        print "Running callbacks for %s with args %s" % (event, args)
-        if event in self.callbacks:
-            self.callbacks[event][:] = [x for x in self.callbacks[event] if not x(*args)]
+    def runCallbacks(self, *args):
+        print "Running callbacks with args %s" % (args,)
+        self.callbacks[:] = [x for x in self.callbacks if not x(*args)]
+
     #        for callback in self.callbacks[event]:
     #            callback(*args)
     #        self.callbacks[event] = []
@@ -77,15 +75,14 @@ class UnderscoreBot(irc.IRCClient):
     def sendLine(self, line):
         self.logger.write(" <-- " + line, "raw", echo=False)
         irc.IRCClient.sendLine(self, line)
-
-    def irc_unknown(self, prefix, command, params):
-        if command == "RPL_CHANNELMODEIS":
-            self.runCallbacks("RPL_CHANNELMODEIS", *params)
-        #print "irc_unknown"
-        #print "\t" + str(prefix);
-        # print "\t" + str(type(command))
-        # print "\t" + str(command)
-        print "\t%s: %s" % (command, params)
+    
+    def handleCommand(self, prefix, command, params):
+        print "handleCommand:"
+        print "\tprefix:", prefix
+        print "\tcommand:", command
+        print "\tparams:", params
+        self.runCallbacks(prefix, command, params)
+        irc.IRCClient.handleCommand(self, prefix, command, params)
 
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
@@ -111,11 +108,17 @@ class UnderscoreBot(irc.IRCClient):
         
         #self.mode("#wrentest2", True, "c");
         if msg == "modes?":
-            def channelModeCB(rplNick, rplChannel, rplModes, *rplValues):
-                self.msg(channel, "The mode for %s is %s" % (rplChannel,rplModes))
-                return True
-            if self.isAChannel(channel):
-                self.addCallback("RPL_CHANNELMODEIS", channelModeCB)
+            def modesCallback(prefix, command, params):
+                if prefix == "RPL_CHANNELMODEIS":
+                    self.msg(channel, params[2])
+                    return True
+                elif prefix == "RPL_UMODEIS":
+                    self.msg(channel, params[1])
+                    return True
+                return False
+                #self.msg(channel, "The mode for %s is %s" % (rplChannel,rplModes))
+                #return True
+            self.addCallback(modesCallback)
             self.sendLine("MODE %s" % channel)
 
         # Check to see if they're sending me a private message
