@@ -87,6 +87,22 @@ def handleCommand(client, user, channel, msg):
                     client.msg(channel, line.strip())
             except ValueError as e:
                 client.msg(channel, "Invalid argument")
+        
+        elif command["command"] in ("authstat"):
+            targetNick = command["args"]
+            def callback(prefix, command, params):
+                if prefix == "330" and params[1].lower() == targetNick.lower():
+                    client.msg(channel, "%s is logged in as %s" % (params[1], params[2]))
+                    return True
+                elif prefix == "ERR_NOSUCHNICK" and params[1].lower() == targetNick.lower():
+                    client.msg(channel, "%s does not appear to be a current user" % (params[1]))
+                    return True
+                elif prefix == "RPL_ENDOFWHOIS" and params[1].lower() == targetNick.lower():
+                    client.msg(channel, "%s does not appear to be logged in." % (params[1]))
+                else:
+                    return False
+            client.addCallback(callback)
+            client.sendLine("WHOIS %s" % command["args"])
 
         elif command["command"] in ("chronicle", "chron"):
             ticketCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
