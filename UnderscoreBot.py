@@ -77,10 +77,10 @@ class UnderscoreBot(irc.IRCClient):
         irc.IRCClient.sendLine(self, line)
     
     def handleCommand(self, prefix, command, params):
-        print "handleCommand:"
-        print "\tprefix:", prefix
-        print "\tcommand:", command
-        print "\tparams:", params
+        #print "handleCommand:"
+        #print "\tprefix:", prefix
+        #print "\tcommand:", command
+        #print "\tparams:", params
         self.runCallbacks(prefix, command, params)
         irc.IRCClient.handleCommand(self, prefix, command, params)
 
