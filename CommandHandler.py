@@ -3,6 +3,7 @@ import urllib2
 import snotparser.snotparser as sp
 import SNOTMagic
 import Help
+import LibUnderscore
 from twisted.internet import reactor
 from string import Template
 from datetime import datetime
@@ -88,21 +89,35 @@ def handleCommand(client, user, channel, msg):
             except ValueError as e:
                 client.msg(channel, "Invalid argument")
         
+#        elif command["command"] in ("authstat"):
+#            targetNick = command["args"]
+#            def callback(prefix, command, params):
+#                if prefix == "330" and params[1].lower() == targetNick.lower():
+#                    client.msg(channel, "%s is logged in as %s" % (params[1], params[2]))
+#                    return True
+#                elif prefix == "ERR_NOSUCHNICK" and params[1].lower() == targetNick.lower():
+#                    client.msg(channel, "%s does not appear to be a current user" % (params[1]))
+#                    return True
+#                elif prefix == "RPL_ENDOFWHOIS" and params[1].lower() == targetNick.lower():
+#                    client.msg(channel, "%s does not appear to be logged in." % (params[1]))
+#                else:
+#                    return False
+#            client.addCallback(callback)
+#            client.sendLine("WHOIS %s" % command["args"])
+
         elif command["command"] in ("authstat"):
             targetNick = command["args"]
-            def callback(prefix, command, params):
-                if prefix == "330" and params[1].lower() == targetNick.lower():
-                    client.msg(channel, "%s is logged in as %s" % (params[1], params[2]))
-                    return True
-                elif prefix == "ERR_NOSUCHNICK" and params[1].lower() == targetNick.lower():
-                    client.msg(channel, "%s does not appear to be a current user" % (params[1]))
-                    return True
-                elif prefix == "RPL_ENDOFWHOIS" and params[1].lower() == targetNick.lower():
-                    client.msg(channel, "%s does not appear to be logged in." % (params[1]))
-                else:
-                    return False
-            client.addCallback(callback)
-            client.sendLine("WHOIS %s" % command["args"])
+            LibUnderscore.checkAuthStatus(client, targetNick,
+                                          lambda nick,account: client.msg(channel, "%s is logged in as %s" % (nick, account)),
+                                          lambda nick        : client.msg(channel, "%s does not appear to be a current user" % (nick)),
+                                          lambda nick        : client.msg(channel, "%s does not appear to be logged in" % (nick)))
+
+
+        elif command["command"] in ("comp"):
+            tickets = command["args"].split()
+            for ticket in tickets:
+                if ticket.isdigit():
+                    SNOTMagic.completeTicket(int(ticket), "wren@cat.pdx.edu", "Ticket comped by %s in %s" % (user,channel))
 
         elif command["command"] in ("chronicle", "chron"):
             ticketCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])

@@ -9,6 +9,8 @@ import CommandMonitoring as cm
 import yaml, re, string
 import snotparser.snotparser as sp
 from twisted.internet import reactor
+import smtplib
+from email.mime.text import MIMEText
 
 # Import YAML configuration. This should really be consolidated into one
 # dictionary that can be accessed from multiple places. 
@@ -77,5 +79,17 @@ def makeSNOTLogHandler(client):
 
 # Main function to be called in a subthread by the main program
 def monitorLogs(client):
-   cm.monitorFile(config['snot']['basedir'] + "logs/log",
-                    makeSNOTLogHandler(client))
+    cm.monitorFile(config['snot']['basedir'] + "logs/log",
+                   makeSNOTLogHandler(client))
+
+def completeTicket(number, from_email,  message=None):
+    msg = MIMEText(message)
+    msg['Subject'] = "Completing ticket #%d" % number
+    msg['From']    = from_email
+    msg['To']      = config['snot']['snotEmail']
+    msg.add_header("X-TTS", "%d COMP ; RESP nobody" % number)
+
+    s = smtplib.SMTP('localhost')
+    s.sendmail(from_email, [msg['To']], msg.as_string())
+    s.quit()
+
