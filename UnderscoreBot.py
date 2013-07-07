@@ -53,7 +53,7 @@ class UnderscoreBot(irc.IRCClient):
         print "Added callback: %s" % function
 
     def runCallbacks(self, *args):
-        print "Running callbacks with args %s" % (args,)
+        #print "Running callbacks with args %s" % (args,)
         self.callbacks[:] = [x for x in self.callbacks if not x(*args)]
 
     #        for callback in self.callbacks[event]:
