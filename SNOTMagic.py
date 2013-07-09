@@ -87,7 +87,7 @@ def completeTicket(number, from_email,  message=None):
     msg['Subject'] = "Completing ticket #%d" % number
     msg['From']    = from_email
     msg['To']      = config['snot']['snotEmail']
-    msg.add_header("X-TTS", "%d COMP ; RESP nobody" % number)
+    msg.add_header("X-TTS", "%d COMP" % number)
 
     s = smtplib.SMTP('localhost')
     s.sendmail(from_email, [msg['To']], msg.as_string())
