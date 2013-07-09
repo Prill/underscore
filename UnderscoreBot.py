@@ -21,6 +21,7 @@ import snotparser.snotparser as sp
 import CommandHandler, InlineTicketHandler
 from Logger import Logger
 import SNOTMagic
+import LibUnderscore
 
 # from config import *
 from shadow import chronicle
@@ -44,6 +45,7 @@ class UnderscoreBot(irc.IRCClient):
         self.logger.addLogfile("raw", "raw.log")
         self.handlers = {}
         self.callbacks = []
+        self.users = LibUnderscore.loadUserList()
         #self.addHandler(EasterEggHandler())
         for plugin in config['core']['plugins']['autoload']:
             self.addHandler(plugin[0], plugin[1])

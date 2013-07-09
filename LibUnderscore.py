@@ -20,3 +20,11 @@ def checkAuthStatus(client, nick, authenticatedFunction,
             return False
     client.addCallback(callback)
     client.sendLine("WHOIS %s" % nick)
+
+def loadUserList():
+    users = {}
+    f = open('shadow/nick-account_map');
+    for line in f:
+        nick,account = line.strip().split(',')
+        users[nick] = account
+    return users

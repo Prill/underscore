@@ -114,10 +114,21 @@ def handleCommand(client, user, channel, msg):
 
 
         elif command["command"] in ("comp"):
+            validUsers = client.users
+            print validUsers
             tickets = command["args"].split()
-            for ticket in tickets:
-                if ticket.isdigit():
-                    SNOTMagic.completeTicket(int(ticket), "wren@cat.pdx.edu", "Ticket comped by %s in %s" % (user,channel))
+            def authCallback(nick,account):
+                if account in validUsers:
+                    for ticket in tickets:
+                        if ticket.isdigit():
+                            SNOTMagic.completeTicket(int(ticket), "%s@cat.pdx.edu" % validUsers[account], "Ticket comped by %s in %s" % (user,channel))
+                    client.msg(channel, "Emails sent.")
+                else:
+                    client.msg(channel, "Sorry, you are not authorized to perform that action")
+            LibUnderscore.checkAuthStatus(client, user, authCallback,
+                                          lambda nick: client.msg(channel, "You don't exist. How is this even possible? Wren ^^"),
+                                          lambda nick: client.msg(channel, "You must be authenticated to NickServ to perform this operation"))
+
 
         elif command["command"] in ("chronicle", "chron"):
             ticketCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
