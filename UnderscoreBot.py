@@ -42,7 +42,7 @@ class UnderscoreBot(irc.IRCClient):
         self.nickname = nick
         self.redmine_instance = RedmineTicketFetcher(config["redmine"]["url"], config["redmine"]["api_key"])
         self.logger = Logger("main.log")
-        self.logger.addLogfile("raw", "raw.log")
+        #self.logger.addLogfile("raw", "raw.log")
         self.handlers = {}
         self.callbacks = []
         self.users = LibUnderscore.loadUserList()
@@ -71,11 +71,11 @@ class UnderscoreBot(irc.IRCClient):
         self.logger.write("Connection lost")
 
     def lineReceived(self, line):
-        self.logger.write(" --> " + line, "raw", echo=False)
+        #self.logger.write(" --> " + line, "raw", echo=False)
         irc.IRCClient.lineReceived(self, line)
 
     def sendLine(self, line):
-        self.logger.write(" <-- " + line, "raw", echo=False)
+        #self.logger.write(" <-- " + line, "raw", echo=False)
         irc.IRCClient.sendLine(self, line)
     
     def handleCommand(self, prefix, command, params):
