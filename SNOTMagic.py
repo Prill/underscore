@@ -30,7 +30,7 @@ def makeSNOTLogHandler(client):
             try:
                 mdict = match.groupdict()
                 message = str(mdict)
-                ticketDict = sp.parseTicket(int(mdict['tkt']))
+                ticketDict = sp.parseTicket(int(mdict['tkt']), config['snot']['defaultCommand'])
                 formattedTicket = sp.formatTicketDictSmart(ticketDict, config['snot']['formatString'])
                 # "Case" statement for various ticket commands
                 cmd = mdict["cmd"].lower()
@@ -79,7 +79,7 @@ def makeSNOTLogHandler(client):
 
 # Main function to be called in a subthread by the main program
 def monitorLogs(client):
-    cm.monitorFile(config['snot']['basedir'] + "logs/log",
+    cm.monitorFile(config['snot']['basedir'] + config['snot']['logFile'],
                    makeSNOTLogHandler(client))
 
 def completeTicket(number, from_email,  message=None):

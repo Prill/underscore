@@ -4,10 +4,17 @@ import snotparser.snotparser as sp
 import SNOTMagic
 import Help
 import LibUnderscore
+import yaml
 from twisted.internet import reactor
 from string import Template
 from datetime import datetime
 #import UnderscoreBot
+
+
+CONFIG_FILE = "config.yaml"
+config = None
+with open(CONFIG_FILE) as cfgFile:
+    config = yaml.load(cfgFile)
 
 def parseCommand(prefix, msg):
     command = re.match("^" + prefix + ":?\s*(?P<command>\S*)\s*(?P<args>.*)", msg)
@@ -105,7 +112,7 @@ def handleCommand(client, user, channel, msg):
 #            client.addCallback(callback)
 #            client.sendLine("WHOIS %s" % command["args"])
 
-        elif command["command"] in ("authstat"):
+        elif command["command"] in ("authstat",):
             targetNick = command["args"]
             LibUnderscore.checkAuthStatus(client, targetNick,
                                           lambda nick,account: client.msg(channel, "%s is logged in as %s" % (nick, account)),
@@ -113,21 +120,33 @@ def handleCommand(client, user, channel, msg):
                                           lambda nick        : client.msg(channel, "%s does not appear to be logged in" % (nick)))
 
 
-        elif command["command"] in ("comp"):
+        elif command["command"] in ("comp",):
             validUsers = client.users
-            print validUsers
             tickets = command["args"].split()
             def authCallback(nick,account):
                 if account in validUsers:
                     for ticket in tickets:
                         if ticket.isdigit():
-                            SNOTMagic.completeTicket(int(ticket), "%s@cat.pdx.edu" % validUsers[account], "Ticket comped by %s in %s" % (user,channel))
-                    client.msg(channel, "Emails sent.")
+                            ticketDict = sp.parseTicket(int(ticket), config['snot']['defaultCommand'])
+                            if (ticketDict):
+                                client.msg(channel, "Completing %s (%s)" % (ticket, ticketDict['subject']))
+                                SNOTMagic.completeTicket(int(ticket), "%s@cat.pdx.edu" % validUsers[account], "Ticket comped by %s in %s" % (user,channel))
+                            else:
+                                client.msg(channel, "%s does not appear to be a valid ticket" % (ticket,))
+
                 else:
                     client.msg(channel, "Sorry, you are not authorized to perform that action")
             LibUnderscore.checkAuthStatus(client, user, authCallback,
                                           lambda nick: client.msg(channel, "You don't exist. How is this even possible? Wren ^^"),
                                           lambda nick: client.msg(channel, "You must be authenticated to NickServ to perform this operation"))
+
+        elif command["command"] in ("assign", "resp"):
+            validUsers = client.users
+            (ticket,assignee) = command["args"].split(" ", 1)
+            ticketDict = sp.parseTicket(int(ticket))
+
+           # if (ticket):
+                
 
 
         elif command["command"] in ("chronicle", "chron"):
