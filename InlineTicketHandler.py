@@ -6,7 +6,6 @@ import string
 import CommandHandler as ch
 from RedmineTicketFetcher import RedmineTicketFetcher
 from shadow import chronicle
-from UnderscoreBot import config
 
 class InlineTicketHandler:
     def privmsg(self, client, user, channel, msg):
@@ -26,8 +25,8 @@ def inlineTicketMatch(client, user, channel, msg):
         for ticket in ticketNumbers:
             ticketType = ticket[0].lower()
             if ticketType in ['','snot','tts']:
-                if int(ticket[1]) >= config['snot']['minimumInline']:
-                    client.msg(channel, sp.formatTicketSmart(int(ticket[1]), config['snot']['formatString'], config['snot']['defaultCommand']))
+                if int(ticket[1]) >= client.config['snot']['minimumInline']:
+                    client.msg(channel, sp.formatTicketSmart(int(ticket[1]), client.config['snot']['formatString'], client.config['snot']['defaultCommand']))
                     # client.msg(channel, sp.formatTicket(int(ticket[1]), "$number (SNOT) | $from_line | $assigned_to | $subject | $flags"))
             elif ticketType in ['testsnot']:
                 client.msg(channel, sp.formatTicket(int(ticket[1]), "$number (TESTSNOT) | $from_line | $assigned_to | $subject | $flags", 'testsnot'))

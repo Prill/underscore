@@ -73,10 +73,10 @@ def handleCommand(client, user, channel, msg):
         elif command["command"] in ("reloadHandler", "rh"):
             client.msg(channel, client.reloadHandler(command["args"].strip()))
 
-#        elif command["command"] in ("reloadConfig", "rc"):
-#            CONFIG_FILE = "config.yaml"
-#            with open(CONFIG_FILE) as cfgFile:
-#                UnderscoreBot.config = yaml.load(cfgFile)
+        elif command["command"] in ("reloadConfig", "rc"):
+            CONFIG_FILE = "config.yaml"
+            with open(CONFIG_FILE) as cfgFile:
+                client.config.update(yaml.load(cfgFile))
 
         elif command["command"] in ("startSNOTMonitoring", "ssm"):
             client.logger.write("Calling snot monitoring in subthread")
