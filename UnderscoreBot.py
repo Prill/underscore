@@ -44,6 +44,7 @@ class UnderscoreBot(irc.IRCClient):
         self.logger = Logger("main.log")
         #self.logger.addLogfile("raw", "raw.log")
         self.handlers = {}
+        self.config = config
         self.callbacks = []
         self.users = LibUnderscore.loadUserList()
         #self.addHandler(EasterEggHandler())
@@ -89,8 +90,8 @@ class UnderscoreBot(irc.IRCClient):
     def signedOn(self):
         """Called when bot has succesfully signed on to server."""
         self.logger.write("Signed on")
-        self.logger.write("Identifying to nickserv as %s" % (config['irc']['nick']))
-        self.msg("nickserv", "identify %s %s" % (config["irc"]["nick"], config["irc"]["nickserv_password"]))
+        self.logger.write("Identifying to nickserv as %s" % (self.config['irc']['nick']))
+        self.msg("nickserv", "identify %s %s" % (self.config["irc"]["nick"], self.config["irc"]["nickserv_password"]))
         if self.autojoin:
             for channel, key in self.autojoin_list:
                 self.join(channel, key)

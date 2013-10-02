@@ -12,13 +12,6 @@ from twisted.internet import reactor
 import smtplib
 from email.mime.text import MIMEText
 
-# Import YAML configuration. This should really be consolidated into one
-# dictionary that can be accessed from multiple places. 
-CONFIG_FILE = "config.yaml"
-config = None
-with open(CONFIG_FILE) as cfgFile:
-    config = yaml.load(cfgFile)
-
 # Function that creates another function that is called with the contents of
 # each line of the snot log.
 def makeSNOTLogHandler(client):
@@ -30,21 +23,21 @@ def makeSNOTLogHandler(client):
             try:
                 mdict = match.groupdict()
                 message = str(mdict)
-                ticketDict = sp.parseTicket(int(mdict['tkt']), config['snot']['defaultCommand'])
-                formattedTicket = sp.formatTicketDictSmart(ticketDict, config['snot']['formatString'])
+                ticketDict = sp.parseTicket(int(mdict['tkt']), client.config['snot']['defaultCommand'])
+                formattedTicket = sp.formatTicketDictSmart(ticketDict, client.config['snot']['formatString'])
                 # "Case" statement for various ticket commands
                 cmd = mdict["cmd"].lower()
                 if cmd == "flags":
                     message = "#{tkt} (\"" + ticketDict['subject'] + "\") flagged as {to} by {by}"
                     message = message.format(**mdict)
-                    if mdict['to'] in config['snot']['alerts']['flag']:
-                        for target in config['snot']['alerts']['flag'][mdict['to']]:
+                    if mdict['to'] in client.config['snot']['alerts']['flag']:
+                        for target in client.config['snot']['alerts']['flag'][mdict['to']]:
                             client.notice(target, "Flagged as %s: %s" % (mdict['to'], formattedTicket))
-                            client.logger.write("SNOTMagic: Message '%s' sent to %s" % (formattedTicket, string.join(config['snot']['alerts']['flag'][mdict['to']], ", ")) )
+                            client.logger.write("SNOTMagic: Message '%s' sent to %s" % (formattedTicket, string.join(client.config['snot']['alerts']['flag'][mdict['to']], ", ")) )
                     reactor.wakeUp()
                 elif cmd == "recv":
-                    client.msg(config['snot']['snot_channel'], "Received ticket #{tkt} from {by}".format(**mdict))
-                    client.msg(config['snot']['snot_channel'], formattedTicket)
+                    client.msg(client.config['snot']['snot_channel'], "Received ticket #{tkt} from {by}".format(**mdict))
+                    client.msg(client.config['snot']['snot_channel'], formattedTicket)
                     return
                 elif cmd == "resp":
                     message = "{by} assigned #{tkt} to {to}".format(**mdict)
@@ -63,14 +56,14 @@ def makeSNOTLogHandler(client):
                     message = "#{tkt} priority set to {to} by {by}".format(**mdict)
                 else:
                     message = line
-                #client.logger.write("SNOTMagic: Message '%s' sent to %s" % (message, config['snot']['snot_channel']))
-                client.msg(config['snot']['snot_channel'], message)
+                #client.logger.write("SNOTMagic: Message '%s' sent to %s" % (message, client.config['snot']['snot_channel']))
+                client.msg(client.config['snot']['snot_channel'], message)
             except KeyError as ke:
                 client.logger.write(str(ke))
-                client.msg(config['snot']['snot_channel'], str(ke))
+                client.msg(client.config['snot']['snot_channel'], str(ke))
             except TypeError as te:
                 client.logger.write(str(te))
-                client.msg(config['snot']['snot_channel'], str(te))
+                client.msg(client.config['snot']['snot_channel'], str(te))
         else:
             client.msg("#snot", "Could not match '%s'" % line)
         reactor.wakeUp()
@@ -79,10 +72,10 @@ def makeSNOTLogHandler(client):
 
 # Main function to be called in a subthread by the main program
 def monitorLogs(client):
-    cm.monitorFile(config['snot']['basedir'] + config['snot']['logFile'],
+    cm.monitorFile(client.config['snot']['basedir'] + client.config['snot']['logFile'],
                    makeSNOTLogHandler(client))
 
-def completeTicket(number, from_email,  message=None):
+def completeTicket(number, from_email, config, message=None):
     msg = MIMEText(message)
     msg['Subject'] = "Completing ticket #%d" % number
     msg['From']    = from_email

@@ -11,11 +11,6 @@ from datetime import datetime
 #import UnderscoreBot
 
 
-CONFIG_FILE = "config.yaml"
-config = None
-with open(CONFIG_FILE) as cfgFile:
-    config = yaml.load(cfgFile)
-
 def parseCommand(prefix, msg):
     command = re.match("^" + prefix + ":?\s*(?P<command>\S*)\s*(?P<args>.*)", msg)
     if command:
@@ -127,10 +122,10 @@ def handleCommand(client, user, channel, msg):
                 if account in validUsers:
                     for ticket in tickets:
                         if ticket.isdigit():
-                            ticketDict = sp.parseTicket(int(ticket), config['snot']['defaultCommand'])
+                            ticketDict = sp.parseTicket(int(ticket), client.config['snot']['defaultCommand'])
                             if (ticketDict):
                                 client.msg(channel, "Completing %s (%s)" % (ticket, ticketDict['subject']))
-                                SNOTMagic.completeTicket(int(ticket), "%s@cat.pdx.edu" % validUsers[account], "Ticket comped by %s in %s" % (user,channel))
+                                SNOTMagic.completeTicket(int(ticket), "%s@cat.pdx.edu" % validUsers[account], client.config, "Ticket comped by %s in %s" % (user,channel))
                             else:
                                 client.msg(channel, "%s does not appear to be a valid ticket" % (ticket,))
 
