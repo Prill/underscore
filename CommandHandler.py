@@ -117,7 +117,19 @@ def handleCommand(client, user, channel, msg):
 
         elif command["command"] in ("comp",):
             validUsers = client.users
-            tickets = command["args"].split()
+
+            argSplit = command["args"].split(' ', 1)
+
+            tickets = argSplit[0].split(',')
+            if len(argSplit) >= 2:
+                userMessage = argSplit[1]
+            else:
+                userMessage = None
+
+            print tickets
+            if tickets == None or tickets == ['']:
+                client.msg(channel, "USAGE: comp tkt1[,tkt2,tkt3...] [message]")
+
             def authCallback(nick,account):
                 if account in validUsers:
                     for ticket in tickets:
@@ -125,7 +137,10 @@ def handleCommand(client, user, channel, msg):
                             ticketDict = sp.parseTicket(int(ticket), client.config['snot']['defaultCommand'])
                             if (ticketDict):
                                 client.msg(channel, "Completing %s (%s)" % (ticket, ticketDict['subject']))
-                                SNOTMagic.completeTicket(int(ticket), "%s@cat.pdx.edu" % validUsers[account], client.config, "Ticket comped by %s in %s" % (user,channel))
+                                message = "(Ticket comped by %s in %s)"
+                                if userMessage:
+                                    message = userMessage + "\n\n" + message
+                                SNOTMagic.completeTicket(int(ticket), "%s@cat.pdx.edu" % validUsers[account], client.config, message % (user,channel))
                             else:
                                 client.msg(channel, "%s does not appear to be a valid ticket" % (ticket,))
 
