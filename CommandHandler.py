@@ -19,7 +19,7 @@ def parseCommand(prefix, msg):
         return None
 
 def handleCommand(client, user, channel, msg): 
-    command = parseCommand(client.nickname, msg)
+    command = parseCommand("_", msg)
      
     if command:
         client.logger.write("Command in %s from %s: %s: '%s'" % (channel, user, command["command"], command["args"]))
@@ -158,6 +158,15 @@ def handleCommand(client, user, channel, msg):
            # if (ticket):
                 
 
+        elif command["command"] in ("nick"):
+            def authCallback(nick,account):
+                if account.lower() == "wren":
+                    client.setNick(command["args"])
+                else:
+                    client.msg(channel, "Sorry, you are not authorized to perform that action")
+            LibUnderscore.checkAuthStatus(client, user, authCallback, 
+                                          lambda nick: client.msg(channel, "You don't exist. How is this even possible? Wren ^^"),
+                                          lambda nick: client.msg(channel, "You must be authenticated to NickServ to perform this operation"))
 
         elif command["command"] in ("chronicle", "chron"):
             ticketCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
