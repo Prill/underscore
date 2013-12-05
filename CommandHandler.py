@@ -1,6 +1,7 @@
 import re
 import random
 import urllib2
+import subprocess
 import snotparser.snotparser as sp
 import SNOTMagic
 import Help
@@ -127,9 +128,9 @@ def handleCommand(client, user, channel, msg):
             else:
                 userMessage = None
 
-            print tickets
             if tickets == None or tickets == ['']:
                 client.msg(channel, "USAGE: comp tkt1[,tkt2,tkt3...] [message]")
+                return
 
             def authCallback(nick,account):
                 if account in validUsers:
@@ -151,10 +152,44 @@ def handleCommand(client, user, channel, msg):
                                           lambda nick: client.msg(channel, "You don't exist. How is this even possible? Wren ^^"),
                                           lambda nick: client.msg(channel, "You must be authenticated to NickServ to perform this operation"))
 
-        elif command["command"] in ("assign", "resp"):
+        elif command["command"] in ("flag", "flags"):
             validUsers = client.users
-            (ticket,assignee) = command["args"].split(" ", 1)
-            ticketDict = sp.parseTicket(int(ticket))
+            argSplit = command["args"].split(' ', 1)
+            tickets = argSplit[0].split(',')
+            if len(argSplit) >= 2:
+                flags = argSplit[1]
+                flagSplit = flags.split(',')
+                print tickets, flags, flagSplit
+                p = subprocess.Popen([client.config['snot']['defaultCommand'], '-hF'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                print type(p.stdout)
+                
+                validFlags = [s.strip() for s in iter(p.stdout.readline,'\n')]
+                print validFlags
+                for flag in flagSplit:
+                    if flag not in validFlags:
+                        client.msg(channel, "%s is not a valid flag" % flag)
+                        return
+                flagsArg = flags
+            else:
+                client.msg(channel, "USAGE: flags tkt1,[tkt2,tkt3...] flag1[,flag2,flag3...]")
+                return
+
+            def authCallback(nick,account):
+                if account in validUsers:
+                    for ticket in tickets:
+                        if ticket.isdigit():
+                            ticketDict = sp.parseTicket(int(ticket), client.config['snot']['defaultCommand'])
+                            if (ticketDict):
+                                client.msg(channel, "Flagging %s (%s) as %s" % (ticket, ticketDict['subject'], flags))
+                                message = "(Ticket flagged as %s by %s in %s)" % (flags,user,channel)
+                                SNOTMagic.flagTicket(int(ticket), "%s@cat.pdx.edu" % validUsers[account], client.config, flagsArg, message)
+                            else:
+                                client.msg(channel, "%s does not appear to be a valid ticket" % (ticket,))
+                else:
+                    client.msg(channel, "Sorry, you are not authorized to perform that action")
+            LibUnderscore.checkAuthStatus(client, user, authCallback,
+                                          lambda nick: client.msg(channel, "You don't exist. How is this even possible? Wren ^^"),
+                                          lambda nick: client.msg(channel, "You must be authenticated to NickServ to perform this operation"))
 
            # if (ticket):
                 

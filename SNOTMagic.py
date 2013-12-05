@@ -86,3 +86,14 @@ def completeTicket(number, from_email, config, message=None):
     s.sendmail(from_email, [msg['To']], msg.as_string())
     s.quit()
 
+def flagTicket(number, from_email, config, flags, message):
+    msg = MIMEText(message)
+    msg['Subject'] = "Flagging ticket #%d as %s" % (number, flags)
+    msg['From']    = from_email
+    msg['To']      = config['snot']['snotEmail']
+    msg.add_header("X-TTS", "%d FLAGS %s" % (number,flags))
+
+    s = smtplib.SMTP('localhost')
+    s.sendmail(from_email, [msg['To']], msg.as_string())
+    s.quit()
+
