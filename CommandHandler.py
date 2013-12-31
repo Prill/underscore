@@ -1,4 +1,5 @@
 import re
+import random
 import urllib2
 import snotparser.snotparser as sp
 import SNOTMagic
@@ -177,5 +178,10 @@ def handleCommand(client, user, channel, msg):
             except urllib2.HTTPError as e:
                 client.logger.write(str(type(e)))
                 client.msg(channel, str(e))
+        elif command["command"] in ("horse"):
+            with open("horse_combined", 'r') as f:
+                random_line = str(random.choice(f.readlines()))
+                client.msg(channel, random_line)
+            
         else:
             print "Unrecognized command" 
