@@ -34,7 +34,7 @@ def inlineTicketMatch(client, user, channel, msg):
                 try:
                     d = client.redmine_instance.getTicket(int(ticket[1]))
                     if d['project'] != "Mentor Sessions" or channel == "#mentors":
-                        client.msg(channel, str(Template("$id ($project) | $author | $assigned_to | $subject | $tracker").safe_substitute(d)))
+                        client.msg(channel, str(Template("$id ($project) | $author | $assigned_to | $subject | $tracker | https://chronicle.cat.pdx.edu/issues/$id").safe_substitute(d)))
                 except Exception as e:
                     print "%s: %s" % (ticket[1], e)
                     client.msg(channel, "%s: %s" % (ticket[1], e))
