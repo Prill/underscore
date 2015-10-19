@@ -20,9 +20,9 @@ def parseCommand(prefix, msg):
     else:
         return None
 
-def handleCommand(client, user, channel, msg): 
+def handleCommand(client, user, channel, msg):
     command = parseCommand("_", msg)
-     
+
     if command:
         client.logger.write("Command in %s from %s: %s: '%s'" % (channel, user, command["command"], command["args"]))
         if command["command"] == "help":
@@ -35,35 +35,35 @@ def handleCommand(client, user, channel, msg):
 
         elif command["command"] == "snot":
             snotCommand = re.match("\s*#?(?P<ticketNumber>\d+)\s*(?P<fString>.*)", command["args"])
-            
+
             number = snotCommand.group("ticketNumber")
             #fString = snotCommand.group("fString")
             fString = None
             if fString:
-                formattedString = sp.formatTicket(int(number), fString) 
+                formattedString = sp.formatTicket(int(number), fString)
             else:
                 formattedString = sp.formatTicket(int(number), "$number | $from_line | $assigned_to | $subject | $flags")
             #client.msg(channel,"SNOT COMMAND TIME: %s" % snotCommand.groups("ticketNumber"))
             client.msg(channel, formattedString)
 
         elif command["command"] == "join":
-            channeljoin = re.match("(#?\S*)\s*(.*)", command["args"])       
+            channeljoin = re.match("(#?\S*)\s*(.*)", command["args"])
             # client.msg(channel, str(channeljoin.groups()))
             # for item in channeljoin.groups():
             #     client.msg(channel, item)
             chan = channeljoin.group(1)
             key  = channeljoin.group(2)
             if (key):
-                client.msg(channel, "Joining %s with key \"%s\"" % (chan, key)) 
+                client.msg(channel, "Joining %s with key \"%s\"" % (chan, key))
                 client.join(chan, key)
             else:
                 client.msg(channel, "Joining %s (no key)" % (chan,))
                 client.join(chan)
 
         elif command["command"] in ("part", "leave"):
-            channelPart = re.match("(#?\S*)\s*", command["args"])       
+            channelPart = re.match("(#?\S*)\s*", command["args"])
             client.leave(channelPart.group(1), "Parting is such sweet sorrow")
-        
+
         elif command["command"] in ("listHandlers", "lh"):
             client.msg(channel, "Current handlers:")
             for handler in client.handlers:
@@ -71,7 +71,7 @@ def handleCommand(client, user, channel, msg):
 
         elif command["command"] in ("reload", "rel"):
             client.msg(channel, client.reloadModule(command["args"].strip()))
-        
+
         elif command["command"] in ("reloadHandler", "rh"):
             client.msg(channel, client.reloadHandler(command["args"].strip()))
 
@@ -92,7 +92,7 @@ def handleCommand(client, user, channel, msg):
                     client.msg(channel, line.strip())
             except ValueError as e:
                 client.msg(channel, "Invalid argument")
-        
+
 #        elif command["command"] in ("authstat"):
 #            targetNick = command["args"]
 #            def callback(prefix, command, params):
@@ -162,7 +162,7 @@ def handleCommand(client, user, channel, msg):
                 print tickets, flags, flagSplit
                 p = subprocess.Popen([client.config['snot']['defaultCommand'], '-hF'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 print type(p.stdout)
-                
+
                 validFlags = [s.strip() for s in iter(p.stdout.readline,'\n')]
                 print validFlags
                 for flag in flagSplit:
@@ -192,7 +192,7 @@ def handleCommand(client, user, channel, msg):
                                           lambda nick: client.msg(channel, "You must be authenticated to NickServ to perform this operation"))
 
            # if (ticket):
-                
+
 
         elif command["command"] in ("nick"):
             def authCallback(nick,account):
@@ -200,7 +200,7 @@ def handleCommand(client, user, channel, msg):
                     client.setNick(command["args"])
                 else:
                     client.msg(channel, "Sorry, you are not authorized to perform that action")
-            LibUnderscore.checkAuthStatus(client, user, authCallback, 
+            LibUnderscore.checkAuthStatus(client, user, authCallback,
                                           lambda nick: client.msg(channel, "You don't exist. How is this even possible? Wren ^^"),
                                           lambda nick: client.msg(channel, "You must be authenticated to NickServ to perform this operation"))
 
@@ -217,6 +217,6 @@ def handleCommand(client, user, channel, msg):
             with open("horse_combined", 'r') as f:
                 random_line = str(random.choice(f.readlines()))
                 client.msg(channel, random_line)
-            
+
         else:
-            print "Unrecognized command" 
+            print "Unrecognized command"
