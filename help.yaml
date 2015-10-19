@@ -6,4 +6,7 @@ source: |
 ticketparsing: | 
     This bot watches for mentions of ticket numbers (e.g. #123123) and spits out helpful information.
     It supports both SNOT tickets and Redmine tickets (append a 'c' to the front of the ticket # sign)
+ticketHistory: |
+    USAGE: _ticketHistory <ticket number> | _th <ticket number>
+    Spits out the recent history of the specified ticket in chronological order
 TODO: "Reverse-paging, fix dynamic loading, add feature to join invite-only channels, multithreading"
