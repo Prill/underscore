@@ -217,6 +217,10 @@ def handleCommand(client, user, channel, msg):
             with open("horse_combined", 'r') as f:
                 random_line = str(random.choice(f.readlines()))
                 client.msg(channel, random_line)
+        elif command["command"] in ("riker"):
+            with open("riker.txt", 'r') as f:
+                random_line = str(random.choice(f.readlines()))
+                client.msg(channel, random_line)
 
         else:
             print "Unrecognized command"
