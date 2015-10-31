@@ -10,3 +10,6 @@ ticketHistory: |
     USAGE: _ticketHistory <ticket number> | _th <ticket number>
     Spits out the recent history of the specified ticket in chronological order
 TODO: "Reverse-paging, fix dynamic loading, add feature to join invite-only channels, multithreading"
+irc: |
+    _join #<channel> [<password>]
+    _part #<channel>
