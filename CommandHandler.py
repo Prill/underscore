@@ -194,7 +194,7 @@ def handleCommand(client, user, channel, msg):
            # if (ticket):
 
 
-        elif command["command"] in ("nick",)
+        elif command["command"] in ("nick",):
             def authCallback(nick,account):
                 if account.lower() == "wren":
                     client.setNick(command["args"])
