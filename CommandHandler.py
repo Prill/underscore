@@ -194,7 +194,7 @@ def handleCommand(client, user, channel, msg):
            # if (ticket):
 
 
-        elif command["command"] in ("nick"):
+        elif command["command"] in ("nick",)
             def authCallback(nick,account):
                 if account.lower() == "wren":
                     client.setNick(command["args"])
@@ -213,11 +213,11 @@ def handleCommand(client, user, channel, msg):
             except urllib2.HTTPError as e:
                 client.logger.write(str(type(e)))
                 client.msg(channel, str(e))
-        elif command["command"] in ("horse"):
+        elif command["command"] in ("horse",):
             with open("horse_combined", 'r') as f:
                 random_line = str(random.choice(f.readlines()))
                 client.msg(channel, random_line)
-        elif command["command"] in ("riker"):
+        elif command["command"] in ("riker",):
             with open("riker.txt", 'r') as f:
                 random_line = str(random.choice(f.readlines()))
                 client.msg(channel, random_line)
