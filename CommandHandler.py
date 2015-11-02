@@ -14,7 +14,7 @@ from datetime import datetime
 
 
 def parseCommand(prefix, msg):
-    command = re.match("^" + prefix + ":?\s*(?P<command>\S*)\s*(?P<args>.*)", msg)
+    command = re.match("^" + re.escape(prefix) + ":?\s*(?P<command>\S*)\s*(?P<args>.*)", msg)
     if command:
         return command.groupdict()
     else:
